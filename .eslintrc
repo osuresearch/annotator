@@ -1,0 +1,77 @@
+{
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react/recommended",
+    "plugin:mdx/recommended",
+    "plugin:import/errors",
+    "plugin:import/typescript",
+    "prettier"
+  ],
+  "plugins": [
+    "@typescript-eslint",
+    "jest",
+    "prettier",
+    "react",
+    "simple-import-sort"
+  ],
+  "env": {
+    "node": true,
+    "jest": true
+  },
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
+  "ignorePatterns": [
+    "/node_modules",
+    "/dist"
+  ],
+  "rules": {
+    "@typescript-eslint/ban-ts-comment": "warn",
+    "@typescript-eslint/camelcase": "off",
+    "@typescript-eslint/explicit-function-return-type": "off",
+    "@typescript-eslint/interface-name-prefix": "off",
+    "@typescript-eslint/no-empty-interface": "warn",
+    "@typescript-eslint/no-empty-function": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-var-requires": "off",
+    "arrow-body-style": [
+      "error",
+      "as-needed"
+    ],
+    "arrow-parens": [
+      "error",
+      "always"
+    ],
+    "dot-notation":"error",
+    "import/namespace": "off",
+    "import/no-cycle": "off",
+    "import/order": "off", // Handled via prettier
+    "import/no-unresolved": "off",
+    "jest/no-disabled-tests": "warn",
+    "jest/no-focused-tests": "error",
+    "jest/no-identical-title": "error",
+    "jest/prefer-to-have-length": "warn",
+    "jest/valid-expect": "error",
+    "jsx-a11y/anchor-is-valid": "off",
+    "no-else-return": "error",
+    "no-empty": "off",
+    "no-empty-pattern": "warn",
+    "no-undef": "off",
+    "no-unused-vars": "off", // Handled via @typescript-eslint/no-unused-vars
+    "no-useless-catch": "off",
+    "no-useless-escape": "off",
+    "prettier/prettier": "error",
+    "react/display-name": "off",
+    "react/jsx-curly-brace-presence": "error",
+    "react/no-string-refs": "off",
+    "react/prop-types": "off"
+  },
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaVersion": 12
+  }
+}
