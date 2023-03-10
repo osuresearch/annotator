@@ -140,6 +140,19 @@
     "*.{ts,tsx}": "npm run lint"
   },
   "dependencies": {
-
+    "@mantine/hooks": "^6.0.1",
+    "@osuresearch/ui": "^5.0.0-alpha.13",
+    "@tiptap/extension-character-count": "^2.0.0-beta.220",
+    "@tiptap/extension-document": "^2.0.0-beta.220",
+    "@tiptap/extension-highlight": "^2.0.0-beta.220",
+    "@tiptap/extension-placeholder": "^2.0.0-beta.220",
+    "@tiptap/extension-text": "^2.0.0-beta.220",
+    "@tiptap/react": "^2.0.0-beta.220",
+    "@tiptap/starter-kit": "^2.0.0-beta.220",
+    "react-aria": "^3.23.1",
+    "react-frame-component": "^5.2.6",
+    "react-stately": "^3.21.0",
+    "styled-components": "^5.3.8",
+    "uuid": "^9.0.0"
   }
 }
