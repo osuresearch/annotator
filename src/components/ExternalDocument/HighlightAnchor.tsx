@@ -3,15 +3,8 @@ import { createPortal } from 'react-dom';
 import { NoteAnchor } from './NoteAnchor';
 import { Reviewable } from './Reviewable';
 
-export type AnchorProps = {
-  source: string;
-  el: HTMLElement;
-  type: RUIAnnoSubtype;
-};
-
-function _Anchor({ source, el, type }: AnchorProps) {
+function _HighlightAnchor({ source, el, type }: Anchor) {
   const [dom, setDOM] = useState<string>();
-  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // For highlight annotations, we extract the DOM and render it
@@ -22,15 +15,11 @@ function _Anchor({ source, el, type }: AnchorProps) {
     }
   }, [el, type]);
 
-  if (type === 'highlight' && dom) {
-    return createPortal(<Reviewable ref={ref} name={source} content={dom} />, el);
+  if (!dom) {
+    return <></>;
   }
 
-  if (type === 'note') {
-    return <NoteAnchor el={el} name={source} />;
-  }
-
-  return null;
+  return createPortal(<Reviewable name={source} content={dom} />, el);
 }
 
-export const Anchor = memo<AnchorProps>(_Anchor);
+export const HighlightAnchor = memo<Anchor>(_HighlightAnchor);

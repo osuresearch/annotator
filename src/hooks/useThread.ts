@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useAnchorsContext } from './useAnchorsContext';
 import { useAnnotationsContext } from './useAnnotationsContext';
 
 export type UseThreadReturn = {
@@ -82,7 +83,7 @@ export function useThread(id: AnnotationID): UseThreadReturn {
 
       remove: (recoverable = true) => {
         thread &&
-          updateBody('RippleThread', thread.id, (prev) => ({
+          updateBody('Thread', thread.id, (prev) => ({
             ...prev,
             deleted: true,
             recoverable
@@ -91,7 +92,7 @@ export function useThread(id: AnnotationID): UseThreadReturn {
 
       recover: () => {
         thread &&
-          updateBody('RippleThread', thread.id, (prev) => ({
+          updateBody('Thread', thread.id, (prev) => ({
             ...prev,
             deleted: false
           }));
@@ -99,7 +100,7 @@ export function useThread(id: AnnotationID): UseThreadReturn {
 
       resolve: () => {
         thread &&
-          updateBody('RippleThread', thread.id, (prev) => ({
+          updateBody('Thread', thread.id, (prev) => ({
             ...prev,
             resolved: true
           }));
@@ -107,7 +108,7 @@ export function useThread(id: AnnotationID): UseThreadReturn {
 
       reopen: () => {
         thread &&
-          updateBody('RippleThread', thread.id, (prev) => ({
+          updateBody('Thread', thread.id, (prev) => ({
             ...prev,
             resolved: false
           }));
@@ -122,7 +123,7 @@ export function useThread(id: AnnotationID): UseThreadReturn {
 
         // Tap the main thread to trigger a re-render and update
         // any metadata that we need to update at the thread level.
-        updateBody('RippleThread', thread.id, (prev) => ({
+        updateBody('Thread', thread.id, (prev) => ({
           ...prev
         }));
 
@@ -149,7 +150,7 @@ export function useThread(id: AnnotationID): UseThreadReturn {
           );
         }
 
-        updateBody('RippleReply', id, (prev) => ({
+        updateBody('ThreadReply', id, (prev) => ({
           ...prev,
           deleted: true,
           recoverable
@@ -163,7 +164,7 @@ export function useThread(id: AnnotationID): UseThreadReturn {
           );
         }
 
-        updateBody('RippleReply', id, (prev) => ({
+        updateBody('ThreadReply', id, (prev) => ({
           ...prev,
           deleted: false
         }));

@@ -61,6 +61,8 @@ export type ReviewableProps = {
  *
  * TODO: Break this component down more. Anchor is a good candidate for some of this
  * (at least the positioning pieces)
+ *
+ * NOTE: Don't need forwardRef anymore
  */
 export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, content }, ref) => {
   const [isTextSelected, setIsTextSelected] = useState(false);
@@ -167,15 +169,13 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
     // However, if the user focuses a resolved thread, we
     // show the focus mark.
     threads.forEach((t) => {
-      const { deleted, resolved } = t.body.find(
-        (b) => b.type === 'RippleThread'
-      ) as AnnotationThreadBody;
+      const { deleted, resolved } = t.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
 
       if (!deleted && !resolved) {
         commands
           .setTextSelection({
-            from: (t.target.selector as RippleAnnoSelector).start ?? 0,
-            to: (t.target.selector as RippleAnnoSelector).end ?? 0
+            from: (t.target.selector as RUIAnnoSelector).start ?? 0,
+            to: (t.target.selector as RUIAnnoSelector).end ?? 0
           })
           .setComment(t.id);
       }
@@ -188,8 +188,8 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
         t.id === focused?.id &&
         commands
           .setTextSelection({
-            from: (t.target.selector as RippleAnnoSelector).start ?? 0,
-            to: (t.target.selector as RippleAnnoSelector).end ?? 0
+            from: (t.target.selector as RUIAnnoSelector).start ?? 0,
+            to: (t.target.selector as RUIAnnoSelector).end ?? 0
           })
           .setCommentFocus(t.id)
     );
@@ -216,7 +216,7 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
         const context = editor.state.doc.textBetween(from, to, ' ');
 
         const thread = createThread(name, 'commenting', {
-          type: 'RippleAnnoSelector',
+          type: 'RUIAnnoSelector',
           subtype: 'highlight',
           // TODO: Instance ID support
           top: fromPos.top + (window?.scrollY ?? 0),
@@ -252,9 +252,7 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
     // Sum up threads that haven't been deleted or resolved
     let totalVisible = 0;
     trackedThreads.forEach((t) => {
-      const { deleted, resolved } = t.body.find(
-        (b) => b.type === 'RippleThread'
-      ) as AnnotationThreadBody;
+      const { deleted, resolved } = t.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
 
       if (!deleted && !resolved) {
         totalVisible++;
@@ -280,7 +278,7 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
     const commands = editor.chain().selectAll().unsetCommentFocus().setTextSelection(0);
 
     const range = { from: 0, to: 0 };
-    if (focused?.target.selector?.type === 'RippleAnnoSelector') {
+    if (focused?.target.selector?.type === 'RUIAnnoSelector') {
       range.from = focused.target.selector.start ?? 0;
       range.to = focused.target.selector.end ?? 0;
     }
@@ -291,9 +289,7 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
       return;
     }
 
-    const { deleted } = focused?.body.find(
-      (b) => b.type === 'RippleThread'
-    ) as AnnotationThreadBody;
+    const { deleted } = focused?.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
 
     if (deleted || !threadIds.includes(focused.id)) {
       setActiveMark(undefined);
@@ -332,13 +328,13 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
   useEffect(() => {
     if (isTextSelected && selectionCoords && isFocused) {
       select({
-        field: name,
+        source: name,
         type: 'highlight',
         top: selectionCoords.y
         // top: rect.top + (window?.scrollY ?? 0),
       });
     } else {
-      if (selected?.field === name) {
+      if (selected?.source === name) {
         select(undefined);
       }
     }

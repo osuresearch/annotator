@@ -158,7 +158,7 @@ export function TextEditor({ limit = 1000, ...props }: TextEditorProps) {
         console.log(context);
 
         const thread = createThread(name, 'commenting', {
-          type: 'RippleAnnoSelector',
+          type: 'RUIAnnoSelector',
           subtype: 'highlight',
           top: 0, // TODO: DOM-relative top position
           start: from,

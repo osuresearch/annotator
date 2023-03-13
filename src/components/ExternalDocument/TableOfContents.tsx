@@ -1,6 +1,5 @@
+import { Button, Stack, ToggleButton } from '@osuresearch/ui';
 import React, { useEffect, useState } from 'react';
-import { createPortal } from 'react-dom';
-import { useFrame } from 'react-frame-component';
 
 type SectionAnchorProps = {
   el: HTMLElement;
@@ -10,15 +9,10 @@ type SectionAnchorProps = {
 };
 
 type SectionListProps = {
-  el?: HTMLDivElement;
   anchors: SectionAnchorProps[];
 };
 
-function SectionList({ el, anchors }: SectionListProps) {
-  if (!el) {
-    return null;
-  }
-
+function SectionList({ anchors }: SectionListProps) {
   // Since sections are within iframes, we need to control
   // scroll and focus behaviour.
   const onClickSection = (target: HTMLElement) => {
@@ -26,50 +20,39 @@ function SectionList({ el, anchors }: SectionListProps) {
     target.focus();
   };
 
-  return createPortal(
+  return (
     <div>
-      TODO: TOC injection may happen in the root DOM and not injected into the iframe. Not a fan of
-      this technique currently.
       <ol>
         {anchors.map((props) => (
           <li key={props.id}>
-            <button
+            <Button
+              variant="subtle"
               style={{
                 marginLeft: props.level * 16
               }}
-              onClick={(e) => onClickSection(props.el)}
+              onPress={(e) => onClickSection(props.el)}
             >
               {props.title}
-            </button>
+            </Button>
           </li>
         ))}
       </ol>
-    </div>,
-    el
+    </div>
   );
 }
 
-/**
- * Anchors that denote the beginning of a document section.
- *
- * These are programmatically scrolled to and focused when a button
- * is clicked in the table of contents.
- */
-// function SectionAnchor({ title, id, el }: SectionAnchorProps) {
-//   return createPortal(
-//     <div
-//       id={id}
-//       tabIndex={-1}
-//       style={{ visibility: 'hidden' }}>{title}
-//     </div>,
-//     el
-//   );
-// }
+export type TableOfContentsProps = {
+  /**
+   * The DOM Document to extract a table of contents from.
+   *
+   * This may either be an iframed document or a
+   * live React document.
+   */
+  document?: Document;
+};
 
-export function TableOfContents() {
-  const { document } = useFrame();
+export function TableOfContents({ document }: TableOfContentsProps) {
   const [anchors, setAnchors] = useState<SectionAnchorProps[]>([]);
-  const [container, setContainer] = useState<HTMLDivElement>();
 
   // Throw portals into all the anchor targets
   useEffect(() => {
@@ -93,25 +76,17 @@ export function TableOfContents() {
     });
 
     setAnchors(anchorProps);
-
-    // Add a prepended container for TOC content.
-    // This is a bit non-standard because I want to inject this
-    // *before* any DOM content within the source document.
-    const container = document.createElement('div');
-    document.body.prepend(container);
-    setContainer(container);
-
-    return () => {
-      document.body.removeChild(container);
-      setContainer(undefined);
-    };
   }, [document]);
 
-  // Each section is portaled into its respective container
+  const [open, setOpen] = useState(false);
+
   return (
-    <>
-      <SectionList el={container} anchors={anchors} />
-      {/* {anchors.map((anchorProps) => <SectionAnchor {...anchorProps} />)} */}
-    </>
+    <Stack>
+      <ToggleButton variant="default" onChange={(isSelected) => setOpen(!!isSelected)}>
+        TOC
+      </ToggleButton>
+
+      {open && <SectionList anchors={anchors} />}
+    </Stack>
   );
 }

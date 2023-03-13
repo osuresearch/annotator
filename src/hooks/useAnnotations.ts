@@ -14,7 +14,7 @@ export type AnnotationsContext = {
    * @returns the new Annotation
    */
   createThread: (
-    source: FieldName,
+    source: string,
     motivation: AnnotationMotivation,
     selector?: AnnotationSelector,
     id?: AnnotationID
@@ -67,7 +67,11 @@ export const Context = createContext<AnnotationsContext>({} as AnnotationsContex
 
 export type UseAnnotationsReturn = AnnotationsContext;
 
-export function useAnnotations(initialItems: Annotation[] = []): UseAnnotationsReturn {
+export function useAnnotations(
+  initialItems: Annotation[] = [],
+  agent: AnnotationAgent,
+  role: string
+): UseAnnotationsReturn {
   // React-stately will do the heavy lifting of list management
   const { items, selectedKeys, getItem, append, update, setSelectedKeys } = useListData<Annotation>(
     {
@@ -79,7 +83,6 @@ export function useAnnotations(initialItems: Annotation[] = []): UseAnnotationsR
   return useMemo<UseAnnotationsReturn>(() => {
     const focusedAnnotationID = (selectedKeys as Set<Key>).values().next().value;
 
-    // debugger;
     return {
       annotations: items,
       focused: focusedAnnotationID ? getItem(focusedAnnotationID) : undefined,
@@ -104,13 +107,7 @@ export function useAnnotations(initialItems: Annotation[] = []): UseAnnotationsR
           motivation,
           'created': now,
           'modified': now,
-          'creator': {
-            type: 'Person',
-            id: '0123456',
-            name: 'Chase',
-            email: 'mcmanning.1@osu.edu',
-            nickname: 'mcmanning.1'
-          },
+          'creator': agent,
           'target': {
             source,
             selector
@@ -123,8 +120,8 @@ export function useAnnotations(initialItems: Annotation[] = []): UseAnnotationsR
               language: 'en'
             },
             {
-              type: 'RippleThread',
-              role: 'Test', // TODO
+              type: 'Thread',
+              role,
               requiresResponse: false,
               resolved: false,
               deleted: false,
@@ -150,13 +147,7 @@ export function useAnnotations(initialItems: Annotation[] = []): UseAnnotationsR
           'motivation': 'replying',
           'created': now,
           'modified': now,
-          'creator': {
-            type: 'Person',
-            id: '0123456',
-            name: 'Chase',
-            email: 'mcmanning.1@osu.edu',
-            nickname: 'mcmanning.1'
-          },
+          'creator': agent,
           'target': {
             source
           },
@@ -168,8 +159,8 @@ export function useAnnotations(initialItems: Annotation[] = []): UseAnnotationsR
               language: 'en'
             },
             {
-              type: 'RippleReply',
-              role: 'Test', // TODO
+              type: 'ThreadReply',
+              role,
               deleted: false,
               recoverable: true
             }
@@ -206,7 +197,7 @@ export function useAnnotations(initialItems: Annotation[] = []): UseAnnotationsR
       }
     };
     // Probably don't need exhaustive deps, I *think* append/getItem/etc are stable?
-  }, [items, selectedKeys]);
+  }, [items, selectedKeys, agent, role]);
 
   // some way to pull comments for a specific page / field?
   // various filtering behaviour? (reviewers, staff, etc)

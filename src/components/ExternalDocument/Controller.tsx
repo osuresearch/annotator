@@ -1,15 +1,16 @@
-import React, { useEffect, memo, useState } from 'react';
-import { createPortal } from 'react-dom';
+import React, { useEffect, memo } from 'react';
 import { useFrame } from 'react-frame-component';
 import { StyleSheetManager } from 'styled-components';
+import { v4 as uuidv4 } from 'uuid';
 
-import { Anchor, AnchorProps } from './Anchor';
-import { SelectionActions } from './SelectionActions';
-import { TableOfContents } from './TableOfContents';
+import { HighlightAnchor } from './HighlightAnchor';
+import { NoteAnchor } from './NoteAnchor';
+
+import { useAnchorsContext } from '../../hooks/useAnchorsContext';
 
 function _Controller() {
   const { document } = useFrame();
-  const [anchors, setAnchors] = useState<AnchorProps[]>([]);
+  const { items, addAnchors } = useAnchorsContext();
 
   if (!document) {
     return null;
@@ -21,36 +22,44 @@ function _Controller() {
       return;
     }
 
-    const anchorProps: AnchorProps[] = [];
+    const anchors: Anchor[] = [];
 
+    // Elements that can have notes attached to them
     document.querySelectorAll<HTMLElement>('[data-comment-block]').forEach((el) => {
-      anchorProps.push({
+      anchors.push({
+        id: uuidv4(),
         type: 'note',
-        id: el.id,
+        source: el.id,
         el
       });
     });
 
+    // Elements that can have regions of text highlighted
     document.querySelectorAll<HTMLElement>('[data-comment-inline]').forEach((el) => {
-      anchorProps.push({
+      anchors.push({
+        id: uuidv4(),
         type: 'highlight',
-        id: el.id,
+        source: el.id,
         el
       });
     });
 
-    setAnchors(anchorProps);
+    console.log('add anchors');
+
+    addAnchors(anchors);
   }, [document]);
 
   return (
     <div>
       <StyleSheetManager target={document.head}>
         <div>
-          <TableOfContents />
-          <SelectionActions />
-          {anchors.map((anchorProps) => (
-            <Anchor key={anchorProps.id} {...anchorProps} />
-          ))}
+          {items.map((anchor) =>
+            anchor.type === 'highlight' ? (
+              <HighlightAnchor key={anchor.id} {...anchor} />
+            ) : (
+              <NoteAnchor key={anchor.id} {...anchor} />
+            )
+          )}
         </div>
       </StyleSheetManager>
     </div>

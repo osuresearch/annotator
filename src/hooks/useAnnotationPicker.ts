@@ -1,8 +1,8 @@
 import { createContext, useContext } from 'react';
 
 export type AnnotationSelection = {
-  field: FieldName;
-  type: RippleAnnoSubtype;
+  source: string;
+  type: RUIAnnoSubtype;
   top: number;
   start?: number;
   end?: number;

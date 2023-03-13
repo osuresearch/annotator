@@ -3,8 +3,7 @@ import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import styled from 'styled-components';
 import { AnnotationSelection, useAnnotationPicker } from '../../hooks/useAnnotationPicker';
 import { useFocusWithin } from 'react-aria';
-import { useFrame } from 'react-frame-component';
-import { useHotkeys } from '@mantine/hooks';
+import { IconButton, Tooltip } from '@osuresearch/ui';
 
 const Panel = styled.div`
   position: absolute;
@@ -12,6 +11,8 @@ const Panel = styled.div`
   border: 2px solid red;
   transition: 200ms;
   background: white;
+  flex-direction: column;
+  margin-right: -16px;
 `;
 
 const Button = styled.button`
@@ -20,7 +21,6 @@ const Button = styled.button`
 `;
 
 export function SelectionActions() {
-  const { document } = useFrame();
   const { selected, select } = useAnnotationPicker();
   const { createThread } = useAnnotationsContext();
   const [isFocusWithin, onFocusWithinChange] = useState(false);
@@ -32,13 +32,13 @@ export function SelectionActions() {
   const [prev, setPrev] = useState<AnnotationSelection>();
   const [active, setActive] = useState<AnnotationSelection>();
 
-  const onAddAnnotation = () => {
+  const startThread = (motivation: AnnotationMotivation) => {
     if (!active) {
       return;
     }
 
-    const thread = createThread(active.field, 'commenting', {
-      type: 'RippleAnnoSelector',
+    const thread = createThread(active.source, 'commenting', {
+      type: 'RUIAnnoSelector',
       subtype: active.type,
       // TODO: Instance ID support
       top: active.top,
@@ -74,19 +74,40 @@ export function SelectionActions() {
     <Panel
       style={{
         top,
-        display: active ? 'block' : 'none'
+        display: active ? 'flex' : 'none'
       }}
       {...focusWithinProps}
     >
-      <Button onClick={onAddAnnotation}>
+      <Tooltip contentSlot="Ask a question">
+        <IconButton
+          name="question"
+          label="Ask a question"
+          size={24}
+          onPress={() => startThread('questioning')}
+        />
+      </Tooltip>
+
+      <Tooltip contentSlot="Add a comment">
+        <IconButton
+          name="image"
+          label="Add a comment"
+          size={24}
+          onPress={() => startThread('commenting')}
+        />
+      </Tooltip>
+
+      <Tooltip contentSlot="Make a suggestion">
+        <IconButton name="edit" label="Make a suggestion" size={24} />
+      </Tooltip>
+      {/* <Button>
         💬 {isFocusWithin ? 'focus' : 'nope'}
         <br />
-        {selected ? selected.field : 'no sel'}
+        {selected ? selected.source : 'no sel'}
         <br />
-        {prev ? 'prev: ' + prev.field : 'no prev'}
+        {prev ? 'prev: ' + prev.source : 'no prev'}
         <br />
-        {active ? 'active: ' + active.field : 'no active'}
-      </Button>
+        {active ? 'active: ' + active.source : 'no active'}
+      </Button> */}
     </Panel>
   );
 }

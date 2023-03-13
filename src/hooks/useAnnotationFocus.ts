@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useFrame } from 'react-frame-component';
 import { useAnnotationPicker } from './useAnnotationPicker';
 
-export function useAnnotationFocus(name: FieldName, type: 'note' | 'highlight', el: HTMLElement) {
+export function useAnnotationFocus(source: string, type: 'note' | 'highlight', el: HTMLElement) {
   const { window } = useFrame();
   const { selected, select } = useAnnotationPicker();
 
@@ -11,14 +11,14 @@ export function useAnnotationFocus(name: FieldName, type: 'note' | 'highlight', 
     const onFocus = (e: Event) => {
       const rect = (e.target as HTMLElement).getBoundingClientRect();
       select({
-        field: name,
+        source,
         type,
         top: rect.top + (window?.scrollY ?? 0)
       });
     };
 
     const onBlur = (e: Event) => {
-      if (selected?.field === name) {
+      if (selected?.source === source) {
         select(undefined);
       }
     };
@@ -41,9 +41,9 @@ export function useAnnotationFocus(name: FieldName, type: 'note' | 'highlight', 
       el.removeEventListener('focus', onFocus);
       el.removeEventListener('blur', onBlur);
     };
-  }, [el, name, type, selected, select, window]);
+  }, [el, source, type, selected, select, window]);
 
   return {
-    isFocused: selected?.field === name
+    isFocused: selected?.source === source
   };
 }

@@ -1,3 +1,4 @@
+import { Text } from '@osuresearch/ui';
 import React, { CSSProperties } from 'react';
 
 export type SampleProps = {
@@ -13,5 +14,5 @@ export type SampleProps = {
  * - Notes here
  */
 export function Sample({ children, ...props }: SampleProps) {
-  return <div {...props}>{children}</div>;
+  return <Text {...props}>{children}</Text>;
 }

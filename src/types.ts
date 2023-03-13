@@ -5,10 +5,18 @@ type Rect = {
   height: number;
 };
 
+type Anchor = {
+  id: string;
+  type: RUIAnnoSubtype;
+  source: string;
+  el: HTMLElement;
+  annotationId?: AnnotationID;
+};
+
 type AnnotationID = string;
 
 /** Supported annotation selector types */
-type AnnotationSelector = AdobeAnnoSelector | RippleAnnoSelector;
+type AnnotationSelector = AdobeAnnoSelector | RUIAnnoSelector;
 
 /** Supported annotation body types */
 type AnnotationBody = AnnotationTextualBody | AnnotationReplyBody | AnnotationThreadBody;
@@ -74,7 +82,7 @@ type Annotation = {
    *
    * Typically this includes an `AnnotationTextualBody` with a text/html
    * comment value and *either* (mutually exclusive) an `AnnotationThreadBody`
-   * or `AnnotationReplyBody` to include Ripple-specific metadata
+   * or `AnnotationReplyBody` to include specific metadata
    * about an annotation available as a thread or reply within a thread.
    */
   'body': AnnotationBody[];
@@ -86,14 +94,14 @@ type Annotation = {
     /**
      * The IRI that identifies the target resource.
      *
-     * In the case of RippleAnnoSelectors, this is the field name.
+     * In the case of RUIAnnoSelectors, this is the field name.
      */
     source: string;
 
     /**
      * Selector type to associate the annotation with its context.
      *
-     * Supports both Ripple and Adobe formats.
+     * Supports both our own and Adobe formats.
      *
      * Selector will be omitted if the annotation is a reply.
      */
@@ -122,7 +130,7 @@ type AnnotationTextualBody = {
   /**
    * Content format MIME type.
    *
-   * Ripple currently only supports a limited set of content types.
+   * Our annotations currently only supports a limited set of content types.
    */
   format: 'text/html' | 'text/plain';
 
@@ -131,16 +139,19 @@ type AnnotationTextualBody = {
 };
 
 /**
- * Annotation body metadata for a Ripple thread.
+ * Annotation body metadata for a thread.
  */
 type AnnotationThreadBody = {
   /** Annotation body class */
-  type: 'RippleThread';
+  type: 'Thread';
 
   /**
-   * Thread creator's role in relation to the current form.
+   * Thread creator's role in relation to the current document.
    *
    * They may be submitter, a reviewer, a third party expert, an analyst, etc.
+   *
+   * The same Annotation Agent (creator) may have different roles
+   * within the context of an annotated document.
    */
   role: string;
 
@@ -166,16 +177,19 @@ type AnnotationThreadBody = {
 };
 
 /**
- * Annotation body metadata for a reply to a Ripple thread.
+ * Annotation body metadata for a reply to a thread.
  */
 type AnnotationReplyBody = {
   /** Annotation body class */
-  type: 'RippleReply';
+  type: 'ThreadReply';
 
   /**
-   * Annotation creator's role in relation to the current form.
+   * Annotation creator's role in relation to the current document.
    *
    * They may be submitter, a reviewer, a third party expert, an analyst, etc.
+   *
+   * The same Annotation Agent (creator) may have different roles
+   * within the context of an annotated document.
    */
   role: string;
 
@@ -227,21 +241,21 @@ type AnnotationAgent = {
  * https://www.w3.org/TR/annotation-model/#text-position-selector
  */
 type TextPositionSelector = {
-  // UNUSED: May be extended by RippleAnnoSelector
+  // UNUSED: May be extended by RUIAnnoSelector
   type: 'TextPositionSelector';
   start: number;
   end: number;
 };
 
-type RippleAnnoSubtype = 'highlight' | 'note';
+type RUIAnnoSubtype = 'highlight' | 'note';
 
 /**
- * Target selector for Ripple annotations
+ * Target selector for our annotations
  */
-type RippleAnnoSelector = {
-  type: 'RippleAnnoSelector';
+type RUIAnnoSelector = {
+  type: 'RUIAnnoSelector';
 
-  subtype: RippleAnnoSubtype;
+  subtype: RUIAnnoSubtype;
 
   /**
    * Collection instance, if applicable

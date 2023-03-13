@@ -7,11 +7,6 @@ import { useAnnotationFocus } from '../../hooks/useAnnotationFocus';
 import { getHotkeyHandler } from '@mantine/hooks';
 import { useFrame } from 'react-frame-component';
 
-export type NoteAnchorProps = {
-  el: HTMLElement;
-  name: string;
-};
-
 // This is living as a styled component but will probably
 // be migrated to static CSS later in ExternalDocument.tsx.
 // I don't really care for the styled-components lock-in.
@@ -51,12 +46,11 @@ const NotesButton = styled.button`
   }
 `;
 
-export function NoteAnchor({ name, el }: NoteAnchorProps) {
-  const { window } = useFrame();
-  const { threads, isFocused, create, focus } = useThreads(name);
+export function NoteAnchor({ source, el }: Anchor) {
+  const { threads, isFocused, create, focus } = useThreads(source);
 
   // Update the annotation actions widget when we focus this field
-  useAnnotationFocus(name, 'note', el);
+  useAnnotationFocus(source, 'note', el);
 
   // Add hotkey support for the anchor
   useEffect(() => {
@@ -65,10 +59,10 @@ export function NoteAnchor({ name, el }: NoteAnchorProps) {
         'mod+alt+M',
         () => {
           create('commenting', {
-            type: 'RippleAnnoSelector',
+            type: 'RUIAnnoSelector',
             subtype: 'note',
             // TODO: Instance ID support
-            top: el.getBoundingClientRect().top + (window?.scrollY ?? 0)
+            top: el.getBoundingClientRect().top
           });
         }
       ]

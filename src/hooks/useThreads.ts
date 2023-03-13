@@ -30,7 +30,7 @@ export type UseThreadsReturn = {
  * @param includeResolved   Should threads that are resolved also be included in the
  *                          returned list of tracked threads
  */
-export function useThreads(name: FieldName, includeResolved = false): UseThreadsReturn {
+export function useThreads(source: string, includeResolved = false): UseThreadsReturn {
   const { annotations, focused, createThread, focus } = useAnnotationsContext();
 
   const [threads, setThreads] = useState<Annotation[]>([]);
@@ -38,13 +38,11 @@ export function useThreads(name: FieldName, includeResolved = false): UseThreads
 
   useEffect(() => {
     const visible = annotations.filter((t) => {
-      if (t.target.source !== name) {
+      if (t.target.source !== source) {
         return false;
       }
 
-      const { deleted, resolved } = t.body.find(
-        (b) => b.type === 'RippleThread'
-      ) as AnnotationThreadBody;
+      const { deleted, resolved } = t.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
 
       return !deleted && (!resolved || includeResolved);
     });
@@ -54,7 +52,7 @@ export function useThreads(name: FieldName, includeResolved = false): UseThreads
     if (threads.length !== visible.length || !threads.every((t, i) => t.id === visible[i].id)) {
       setThreads(visible);
     }
-  }, [annotations, name, threads, includeResolved]);
+  }, [annotations, source, threads, includeResolved]);
 
   useEffect(() => {
     setIsFocused(!!focused && threads.findIndex((t) => t.id === focused.id) >= 0);
@@ -63,7 +61,7 @@ export function useThreads(name: FieldName, includeResolved = false): UseThreads
   return {
     threads,
     isFocused,
-    create: (motivation, selector) => createThread(name, motivation, selector),
+    create: (motivation, selector) => createThread(source, motivation, selector),
     focus: (thread) => focus(thread.id)
   };
 }

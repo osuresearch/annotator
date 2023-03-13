@@ -17,6 +17,7 @@ import {
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FocusScope } from 'react-aria';
 import { useThread } from '../../hooks/useThread';
+import { useAnchorsContext } from '../../hooks/useAnchorsContext';
 import { EditableMessage } from './EditableMessage';
 import { Reply } from './Reply';
 import { StartReply } from './StartReply';
@@ -30,6 +31,8 @@ export type ThreadProps = {
 
 export function Thread({ node }: ThreadProps) {
   const ref = useRef<HTMLDivElement>(null);
+  const { link, unlink } = useAnchorsContext();
+
   const { focused, replies, focus, updateComment, resolve, reopen, remove, recover } = useThread(
     node.id
   );
@@ -38,7 +41,7 @@ export function Thread({ node }: ThreadProps) {
   const [isAutofocus, setAutofocus] = useState(false);
 
   const body = node.body.find((b) => b.type === 'TextualBody') as AnnotationTextualBody;
-  const state = node.body.find((b) => b.type === 'RippleThread') as AnnotationThreadBody;
+  const state = node.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
 
   const defaultValue = body.value;
   const { deleted, recoverable, resolved } = state;
@@ -62,7 +65,10 @@ export function Thread({ node }: ThreadProps) {
     if (!isInViewport(window, rect)) {
       window.scrollTo(rect.x, rect.y - 100);
     }
-  }, [focused, isInitial]);
+
+    // Map thread to its anchor
+    link(node.target.source, ref.current);
+  }, [ref, focused, isInitial]);
 
   // Scroll this comment into view if not already.
   useEffect(() => {
@@ -111,6 +117,9 @@ export function Thread({ node }: ThreadProps) {
     }
   };
 
+  // TODO: Ref can't be changed around due to thread state things.
+  // Need to always keep this thread in the DOM somehow without unmounting.
+
   // Recoverable deleted threads get a placeholder to undo
   if (deleted && recoverable) {
     return (
@@ -141,6 +150,10 @@ export function Thread({ node }: ThreadProps) {
           'rui-border-light': !focused,
           'rui-border-blue': focused
         })}
+        // style={{
+        //   position: 'absolute',
+        //   top: 0
+        // }}
       >
         <Stack align="stretch" gap={0} pl="xs">
           {resolved && (
@@ -194,7 +207,8 @@ export function Thread({ node }: ThreadProps) {
           )}
 
           {node.id}
-
+          <br />
+          {node.target.selector?.type === 'RUIAnnoSelector' && node.target.selector.top}
           {focused && !isEditing && (
             <Text c="dark" fs="xs">
               {new Date(node.created).toLocaleString()}

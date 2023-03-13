@@ -4,6 +4,8 @@
 
 React components for annotating forms and documents
 
+Usage documentation and examples are available at https://osuresearch.github.io/annotator
+
 ## Changelog
 
 The changelog can be found on the [Releases page](https://github.com/osuresearch/annotator/releases).

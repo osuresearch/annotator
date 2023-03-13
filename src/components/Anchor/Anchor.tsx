@@ -19,7 +19,7 @@ const observer = new IntersectionObserver((entries) => {
 /**
  * Position management for wiring comments to content
  */
-export function Anchor({ name, children }: AnchorProps) {
+export function xxnchor({ name, children }: AnchorProps) {
   const ref = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {

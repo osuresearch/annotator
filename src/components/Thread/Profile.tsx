@@ -8,7 +8,7 @@ export type ProfileProps = {
 
 export function Profile({ node, showRole }: ProfileProps) {
   // Get the creator's role from the annotation body if we can
-  const body = node.body.find((b) => b.type === 'RippleReply' || b.type === 'RippleThread') as {
+  const body = node.body.find((b) => b.type === 'ThreadReply' || b.type === 'Thread') as {
     role: string;
   };
   const role = body ? body.role : '';

@@ -34,8 +34,8 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
 
   // TODO: I don't like these. Stick stateful things into the hook.
   const body = node.body.find((b) => b.type === 'TextualBody') as AnnotationTextualBody;
-  const state = node.body.find((b) => b.type === 'RippleReply') as AnnotationReplyBody;
-  const threadState = thread.body.find((b) => b.type === 'RippleThread') as AnnotationThreadBody;
+  const state = node.body.find((b) => b.type === 'ThreadReply') as AnnotationReplyBody;
+  const threadState = thread.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
 
   const defaultValue = body.value;
   const { deleted, recoverable } = state;
