@@ -51,6 +51,46 @@ export type ReviewableProps = {
   content: string;
 };
 
+const reapplyMarks = (editor: Editor, threads: Annotation[], focused?: Annotation) => {
+  console.log('reapply marks', editor, threads);
+
+  // Remove all comment marks
+  const commands = editor.chain().selectAll().unsetComment().unsetCommentFocus();
+
+  // Re-apply comment marks for the specified threads.
+  // We don't mark deleted or resolved threads.
+  // However, if the user focuses a resolved thread, we
+  // show the focus mark.
+  threads.forEach((t) => {
+    const { deleted, resolved } = t.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
+
+    if (!deleted && !resolved) {
+      commands
+        .setTextSelection({
+          from: (t.target.selector as RUIAnnoSelector).start ?? 0,
+          to: (t.target.selector as RUIAnnoSelector).end ?? 0
+        })
+        .setComment(t.id);
+    }
+  });
+
+  // Select the focused thread if it's in our group
+  // This can merge with the above.
+  threads.forEach(
+    (t) =>
+      t.id === focused?.id &&
+      commands
+        .setTextSelection({
+          from: (t.target.selector as RUIAnnoSelector).start ?? 0,
+          to: (t.target.selector as RUIAnnoSelector).end ?? 0
+        })
+        .setCommentFocus(t.id)
+  );
+
+  // Reset selection and run batch
+  commands.setTextSelection(0).run();
+};
+
 /**
  * A reviewable element can contain multiple selection ranges,
  * each tied to a comment thread.
@@ -118,9 +158,6 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
       return;
     }
 
-    // const ids = getCurrentThreadIDs(editor);
-    // console.log('UPDATE MARKS (mount)', ids);
-
     const ids = new Set<AnnotationID>();
 
     // Find threads that are associated with this field but we don't track yet
@@ -156,46 +193,6 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
 
     setSelectionCoords(undefined);
     setIsTextSelected(false);
-  };
-
-  const reapplyMarks = (editor: Editor, threads: Annotation[]) => {
-    console.log('reapply marks', editor, threads);
-
-    // Remove all comment marks
-    const commands = editor.chain().selectAll().unsetComment().unsetCommentFocus();
-
-    // Re-apply comment marks for the specified threads.
-    // We don't mark deleted or resolved threads.
-    // However, if the user focuses a resolved thread, we
-    // show the focus mark.
-    threads.forEach((t) => {
-      const { deleted, resolved } = t.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
-
-      if (!deleted && !resolved) {
-        commands
-          .setTextSelection({
-            from: (t.target.selector as RUIAnnoSelector).start ?? 0,
-            to: (t.target.selector as RUIAnnoSelector).end ?? 0
-          })
-          .setComment(t.id);
-      }
-    });
-
-    // Select the focused thread if it's in our group
-    // This can merge with the above.
-    threads.forEach(
-      (t) =>
-        t.id === focused?.id &&
-        commands
-          .setTextSelection({
-            from: (t.target.selector as RUIAnnoSelector).start ?? 0,
-            to: (t.target.selector as RUIAnnoSelector).end ?? 0
-          })
-          .setCommentFocus(t.id)
-    );
-
-    // Reset selection and run batch
-    commands.setTextSelection(0).run();
   };
 
   const addCommentOnSelection = () => {
@@ -262,7 +259,7 @@ export const Reviewable = forwardRef<HTMLDivElement, ReviewableProps>(({ name, c
     // Threads were either added or removed.
     // Reapply marks to the Tiptap DOM.
     if (totalVisible !== markCount) {
-      reapplyMarks(editor, trackedThreads);
+      reapplyMarks(editor, trackedThreads, focused);
       setMarkCount(totalVisible);
     }
   }, [editor, annotations, threadIds]);

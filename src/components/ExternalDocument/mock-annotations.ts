@@ -2,47 +2,47 @@ export const shortFormAnnotations: Annotation[] = [
   // note these are out of order on purpose so that
   // we can test sorting annotation threads based on
   // document anchor positions
-  {
-    '@context': 'http://www.w3.org/ns/anno.jsonld',
-    'type': 'Annotation',
-    'id': '617cf321-fac1-4a1d-a235-224bf28faff0',
-    'motivation': 'commenting',
-    'created': '2023-03-10T16:45:37.514Z',
-    'modified': '2023-03-10T16:45:37.514Z',
-    'creator': {
-      type: 'Person',
-      id: '0123456',
-      name: 'Chase',
-      email: 'mcmanning.1@osu.edu',
-      nickname: 'mcmanning.1'
-    },
-    'target': {
-      source: 'field13',
-      selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        top: 0,
-        start: 48,
-        end: 74
-      }
-    },
-    'body': [
-      {
-        type: 'TextualBody',
-        value: '<p>And an inline for Nullam egestas urna risus of section 4</p>',
-        format: 'text/html',
-        language: 'en'
-      },
-      {
-        type: 'Thread',
-        role: 'Test',
-        requiresResponse: false,
-        resolved: false,
-        deleted: false,
-        recoverable: true
-      }
-    ]
-  },
+  // {
+  //   '@context': 'http://www.w3.org/ns/anno.jsonld',
+  //   'type': 'Annotation',
+  //   'id': '617cf321-fac1-4a1d-a235-224bf28faff0',
+  //   'motivation': 'commenting',
+  //   'created': '2023-03-10T16:45:37.514Z',
+  //   'modified': '2023-03-10T16:45:37.514Z',
+  //   'creator': {
+  //     type: 'Person',
+  //     id: '0123456',
+  //     name: 'Chase',
+  //     email: 'mcmanning.1@osu.edu',
+  //     nickname: 'mcmanning.1'
+  //   },
+  //   'target': {
+  //     source: 'field13',
+  //     selector: {
+  //       type: 'RUIAnnoSelector',
+  //       subtype: 'highlight',
+  //       top: 0,
+  //       start: 48,
+  //       end: 74
+  //     }
+  //   },
+  //   'body': [
+  //     {
+  //       type: 'TextualBody',
+  //       value: '<p>And an inline for Nullam egestas urna risus of section 4</p>',
+  //       format: 'text/html',
+  //       language: 'en'
+  //     },
+  //     {
+  //       type: 'Thread',
+  //       role: 'Test',
+  //       requiresResponse: false,
+  //       resolved: false,
+  //       deleted: false,
+  //       recoverable: true
+  //     }
+  //   ]
+  // },
   {
     '@context': 'http://www.w3.org/ns/anno.jsonld',
     'type': 'Annotation',
@@ -107,88 +107,88 @@ export const shortFormAnnotations: Annotation[] = [
       }
     ]
   },
-  {
-    '@context': 'http://www.w3.org/ns/anno.jsonld',
-    'type': 'Annotation',
-    'id': 'ca3c2575-44c1-4af5-8fd4-5cd46ffa5dcd',
-    'motivation': 'commenting',
-    'created': '2023-03-10T16:44:38.927Z',
-    'modified': '2023-03-10T16:44:38.927Z',
-    'creator': {
-      type: 'Person',
-      id: '0123456',
-      name: 'Chase',
-      email: 'mcmanning.1@osu.edu',
-      nickname: 'mcmanning.1'
-    },
-    'target': {
-      source: 'field1',
-      selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        top: 0,
-        start: 32,
-        end: 58
-      }
-    },
-    'body': [
-      {
-        type: 'TextualBody',
-        value: '<p>inline comment for Lorem ipsum dolor sit amet</p>',
-        format: 'text/html',
-        language: 'en'
-      },
-      {
-        type: 'Thread',
-        role: 'Test',
-        requiresResponse: false,
-        resolved: false,
-        deleted: false,
-        recoverable: true
-      }
-    ]
-  },
-  {
-    '@context': 'http://www.w3.org/ns/anno.jsonld',
-    'type': 'Annotation',
-    'id': 'b92f78c4-94ef-4c16-8cfa-444a3a40ecb5',
-    'motivation': 'commenting',
-    'created': '2023-03-10T16:44:49.542Z',
-    'modified': '2023-03-10T16:44:49.542Z',
-    'creator': {
-      type: 'Person',
-      id: '0123456',
-      name: 'Chase',
-      email: 'mcmanning.1@osu.edu',
-      nickname: 'mcmanning.1'
-    },
-    'target': {
-      source: 'field1',
-      selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        top: 0,
-        start: 244,
-        end: 271
-      }
-    },
-    'body': [
-      {
-        type: 'TextualBody',
-        value: '<p>And an inline for Vestibulum eu aliquet ipsum in section 2</p>',
-        format: 'text/html',
-        language: 'en'
-      },
-      {
-        type: 'Thread',
-        role: 'Test',
-        requiresResponse: false,
-        resolved: false,
-        deleted: false,
-        recoverable: true
-      }
-    ]
-  },
+  // {
+  //   '@context': 'http://www.w3.org/ns/anno.jsonld',
+  //   'type': 'Annotation',
+  //   'id': 'ca3c2575-44c1-4af5-8fd4-5cd46ffa5dcd',
+  //   'motivation': 'commenting',
+  //   'created': '2023-03-10T16:44:38.927Z',
+  //   'modified': '2023-03-10T16:44:38.927Z',
+  //   'creator': {
+  //     type: 'Person',
+  //     id: '0123456',
+  //     name: 'Chase',
+  //     email: 'mcmanning.1@osu.edu',
+  //     nickname: 'mcmanning.1'
+  //   },
+  //   'target': {
+  //     source: 'field1',
+  //     selector: {
+  //       type: 'RUIAnnoSelector',
+  //       subtype: 'highlight',
+  //       top: 0,
+  //       start: 32,
+  //       end: 58
+  //     }
+  //   },
+  //   'body': [
+  //     {
+  //       type: 'TextualBody',
+  //       value: '<p>inline comment for Lorem ipsum dolor sit amet</p>',
+  //       format: 'text/html',
+  //       language: 'en'
+  //     },
+  //     {
+  //       type: 'Thread',
+  //       role: 'Test',
+  //       requiresResponse: false,
+  //       resolved: false,
+  //       deleted: false,
+  //       recoverable: true
+  //     }
+  //   ]
+  // },
+  // {
+  //   '@context': 'http://www.w3.org/ns/anno.jsonld',
+  //   'type': 'Annotation',
+  //   'id': 'b92f78c4-94ef-4c16-8cfa-444a3a40ecb5',
+  //   'motivation': 'commenting',
+  //   'created': '2023-03-10T16:44:49.542Z',
+  //   'modified': '2023-03-10T16:44:49.542Z',
+  //   'creator': {
+  //     type: 'Person',
+  //     id: '0123456',
+  //     name: 'Chase',
+  //     email: 'mcmanning.1@osu.edu',
+  //     nickname: 'mcmanning.1'
+  //   },
+  //   'target': {
+  //     source: 'field1',
+  //     selector: {
+  //       type: 'RUIAnnoSelector',
+  //       subtype: 'highlight',
+  //       top: 0,
+  //       start: 244,
+  //       end: 271
+  //     }
+  //   },
+  //   'body': [
+  //     {
+  //       type: 'TextualBody',
+  //       value: '<p>And an inline for Vestibulum eu aliquet ipsum in section 2</p>',
+  //       format: 'text/html',
+  //       language: 'en'
+  //     },
+  //     {
+  //       type: 'Thread',
+  //       role: 'Test',
+  //       requiresResponse: false,
+  //       resolved: false,
+  //       deleted: false,
+  //       recoverable: true
+  //     }
+  //   ]
+  // },
   {
     '@context': 'http://www.w3.org/ns/anno.jsonld',
     'type': 'Annotation',
@@ -306,48 +306,48 @@ export const shortFormAnnotations: Annotation[] = [
       }
     ]
   },
-  {
-    '@context': 'http://www.w3.org/ns/anno.jsonld',
-    'type': 'Annotation',
-    'id': '7aab03d9-4005-4ca2-8830-4cdcccec54fa',
-    'motivation': 'commenting',
-    'created': '2023-03-10T16:48:09.045Z',
-    'modified': '2023-03-10T16:48:09.045Z',
-    'creator': {
-      type: 'Person',
-      id: '0123456',
-      name: 'Chase',
-      email: 'mcmanning.1@osu.edu',
-      nickname: 'mcmanning.1'
-    },
-    'target': {
-      source: 'field5',
-      selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        top: 0,
-        start: 49,
-        end: 166
-      }
-    },
-    'body': [
-      {
-        type: 'TextualBody',
-        value:
-          '<p>Subsection 2.1 Nullam egestas urna risus, nec sodales nisl facilisis sed. Duis vitae velit sed ipsum consectetur blandit ut at diam.</p>',
-        format: 'text/html',
-        language: 'en'
-      },
-      {
-        type: 'Thread',
-        role: 'Test',
-        requiresResponse: false,
-        resolved: false,
-        deleted: false,
-        recoverable: true
-      }
-    ]
-  },
+  // {
+  //   '@context': 'http://www.w3.org/ns/anno.jsonld',
+  //   'type': 'Annotation',
+  //   'id': '7aab03d9-4005-4ca2-8830-4cdcccec54fa',
+  //   'motivation': 'commenting',
+  //   'created': '2023-03-10T16:48:09.045Z',
+  //   'modified': '2023-03-10T16:48:09.045Z',
+  //   'creator': {
+  //     type: 'Person',
+  //     id: '0123456',
+  //     name: 'Chase',
+  //     email: 'mcmanning.1@osu.edu',
+  //     nickname: 'mcmanning.1'
+  //   },
+  //   'target': {
+  //     source: 'field5',
+  //     selector: {
+  //       type: 'RUIAnnoSelector',
+  //       subtype: 'highlight',
+  //       top: 0,
+  //       start: 49,
+  //       end: 166
+  //     }
+  //   },
+  //   'body': [
+  //     {
+  //       type: 'TextualBody',
+  //       value:
+  //         '<p>Subsection 2.1 Nullam egestas urna risus, nec sodales nisl facilisis sed. Duis vitae velit sed ipsum consectetur blandit ut at diam.</p>',
+  //       format: 'text/html',
+  //       language: 'en'
+  //     },
+  //     {
+  //       type: 'Thread',
+  //       role: 'Test',
+  //       requiresResponse: false,
+  //       resolved: false,
+  //       deleted: false,
+  //       recoverable: true
+  //     }
+  //   ]
+  // },
   {
     '@context': 'http://www.w3.org/ns/anno.jsonld',
     'type': 'Annotation',

@@ -127,6 +127,7 @@ export function ExternalDocument(props: ExternalDocumentProps) {
       <Group bgc="light" justify="center" miw="calc(21cm + 400px)" py="md">
         {document && <TableOfContents document={document} />}
         <Paper w="21cm" miw="21cm" p="xxl" withBorder shadow="md" ml="xxl">
+          <div className="marker" />
           <Frame
             ref={frameRef}
             initialContent={props.content}

@@ -3,8 +3,6 @@ import {
   Text,
   Stack,
   Group,
-  TextField,
-  TextAreaField,
   Paper,
   IconButton,
   Menu,
@@ -12,7 +10,8 @@ import {
   Chip,
   Icon,
   Link,
-  cx
+  cx,
+  Code
 } from '@osuresearch/ui';
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { FocusScope } from 'react-aria';
@@ -24,14 +23,56 @@ import { StartReply } from './StartReply';
 import { ReadOnlyMessage } from './ReadOnlyMessage';
 import { isInViewport } from '../../utils';
 import { Profile } from './Profile';
+import { CellListItem, UseCellListReturn } from '../../hooks/useCellList';
 
 export type ThreadProps = {
   node: Annotation;
+  cellListProps: UseCellListReturn;
 };
 
-export function Thread({ node }: ThreadProps) {
+function AnchorDebug({
+  node,
+  el,
+  items
+}: {
+  node: Annotation;
+  el?: HTMLDivElement | null;
+  items: CellListItem[];
+}) {
+  const { getAnchor } = useAnchorsContext();
+
+  if (!el) {
+    return null;
+  }
+
+  const fieldAnchor = getAnchor({
+    source: node.target.source
+  });
+
+  const scopedAnchor = getAnchor({
+    source: node.target.source,
+    annotationId: node.id
+  });
+
+  return (
+    <div>
+      {node.target.source}
+      <br />
+      {fieldAnchor ? fieldAnchor.id : ' no field anchor'}
+      <br />
+      {scopedAnchor ? scopedAnchor.id : ' no scoped anchor'}
+      <br />
+      <Text fw="bold">{fieldAnchor?.target?.getBoundingClientRect().top}</Text>
+      <Code block>{JSON.stringify(items, undefined, 2)}</Code>
+    </div>
+  );
+}
+
+export function Thread({ node, cellListProps }: ThreadProps) {
   const ref = useRef<HTMLDivElement>(null);
-  const { link, unlink } = useAnchorsContext();
+  const { getAnchorTop, getAnchor } = useAnchorsContext();
+
+  const { getItem, addItem, removeItem, setHeight } = cellListProps;
 
   const { focused, replies, focus, updateComment, resolve, reopen, remove, recover } = useThread(
     node.id
@@ -50,6 +91,32 @@ export function Thread({ node }: ThreadProps) {
   // content yet to the main thread comment.
   const isInitial = defaultValue.trim().length < 1;
 
+  useLayoutEffect(() => {
+    const id = node.id;
+
+    addItem(id, 0, 1);
+
+    return () => {
+      removeItem(id);
+    };
+  }, [node]);
+
+  useEffect(() => {
+    const anchor = getAnchor({
+      source: node.target.source
+      // todo: the rest
+    });
+
+    // Still waiting for the anchor to mount
+    if (!anchor || !anchor.target) {
+      return;
+    }
+
+    console.log(anchor);
+
+    // TODO: Listen for changes
+  }, [getItem, getAnchor, node]);
+
   // If this thread needs to be focused immediately on mount,
   // and we don't have any content (e.g. someone just started
   // a new thread) - force it into focus mode.
@@ -66,9 +133,18 @@ export function Thread({ node }: ThreadProps) {
       window.scrollTo(rect.x, rect.y - 100);
     }
 
+    // TODO: This is a hack that doesn't handle Adobe/etc. Fix.
+    const selectorType = (node.target.selector?.subtype ?? 'note') as RUIAnnoSubtype;
+
     // Map thread to its anchor
-    link(node.target.source, ref.current);
-  }, [ref, focused, isInitial]);
+    // link({
+    //   source: node.target.source,
+    //   type: selectorType,
+
+    //   // Highlights have an explicit target selector
+    //   annotationId: selectorType === 'highlight' ? node.id : undefined,
+    // }, ref.current);
+  }, [node, ref, focused, isInitial]);
 
   // Scroll this comment into view if not already.
   useEffect(() => {
@@ -140,6 +216,7 @@ export function Thread({ node }: ThreadProps) {
   return (
     <FocusScope>
       <Paper
+        id={'thread-' + node.id}
         p="xs"
         ml="sm"
         ref={ref}
@@ -155,6 +232,9 @@ export function Thread({ node }: ThreadProps) {
         //   top: 0
         // }}
       >
+        <div className="edge">
+          <div className="edge__mark" />
+        </div>
         <Stack align="stretch" gap={0} pl="xs">
           {resolved && (
             <Group justify="apart" align="center">
@@ -206,9 +286,6 @@ export function Thread({ node }: ThreadProps) {
             <ReadOnlyMessage message={defaultValue} />
           )}
 
-          {node.id}
-          <br />
-          {node.target.selector?.type === 'RUIAnnoSelector' && node.target.selector.top}
           {focused && !isEditing && (
             <Text c="dark" fs="xs">
               {new Date(node.created).toLocaleString()}
@@ -226,6 +303,8 @@ export function Thread({ node }: ThreadProps) {
 
           {!resolved && !isInitial && <StartReply thread={node} />}
         </Stack>
+
+        <AnchorDebug node={node} el={ref.current} items={[]} />
       </Paper>
     </FocusScope>
   );

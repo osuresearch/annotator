@@ -22,29 +22,29 @@ function _Controller() {
       return;
     }
 
-    const anchors: Anchor[] = [];
+    const anchors: NewAnchor[] = [];
 
     // Elements that can have notes attached to them
     document.querySelectorAll<HTMLElement>('[data-comment-block]').forEach((el) => {
       anchors.push({
-        id: uuidv4(),
         type: 'note',
         source: el.id,
-        el
+        target: el,
+        links: []
       });
     });
 
     // Elements that can have regions of text highlighted
     document.querySelectorAll<HTMLElement>('[data-comment-inline]').forEach((el) => {
       anchors.push({
-        id: uuidv4(),
         type: 'highlight',
         source: el.id,
-        el
+        target: el,
+        links: []
       });
     });
 
-    console.log('add anchors');
+    console.log('add anchors', anchors);
 
     addAnchors(anchors);
   }, [document]);

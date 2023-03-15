@@ -5,12 +5,29 @@ type Rect = {
   height: number;
 };
 
+type AnchorRef = {
+  source: string;
+  annotationId?: AnnotationID;
+  type?: RUIAnnoSubtype;
+};
+
+type NewAnchor = Omit<Anchor, 'id'> & {
+  id?: string;
+};
+
 type Anchor = {
   id: string;
-  type: RUIAnnoSubtype;
+  type?: RUIAnnoSubtype;
   source: string;
-  el: HTMLElement;
   annotationId?: AnnotationID;
+
+  /**
+   * Target element to anchor *to*
+   */
+  target?: HTMLElement;
+
+  /** Elements linked to this anchor. Typically thread containers */
+  links: HTMLElement[];
 };
 
 type AnnotationID = string;

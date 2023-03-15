@@ -46,7 +46,7 @@ const NotesButton = styled.button`
   }
 `;
 
-export function NoteAnchor({ source, el }: Anchor) {
+function NoteAnchorImpl({ source, el }: { source: string; el: HTMLElement }) {
   const { threads, isFocused, create, focus } = useThreads(source);
 
   // Update the annotation actions widget when we focus this field
@@ -90,4 +90,12 @@ export function NoteAnchor({ source, el }: Anchor) {
     </NotesButton>,
     el
   );
+}
+
+export function NoteAnchor({ source, target }: Anchor) {
+  if (!target) {
+    return null;
+  }
+
+  return <NoteAnchorImpl source={source} el={target} />;
 }

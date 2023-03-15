@@ -11,6 +11,37 @@ export function isInViewport(window: Window, rect: Rect) {
   );
 }
 
+/**
+ * Get absolute position of the element in the root document.
+ *
+ * This also accounts for elements within nested iframes.
+ */
+export function getDocumentPosition(el: Element): { top: number; left: number } {
+  const doc = el.ownerDocument;
+  const win = doc.defaultView;
+  if (!win) {
+    return { top: -1, left: -1 };
+  }
+
+  const rect = el.getBoundingClientRect();
+  const scrollLeft = win.scrollY || doc.documentElement.scrollLeft;
+  const scrollTop = win.scrollY || doc.documentElement.scrollTop;
+
+  // If the element is in an iframe, we need to recurse upward.
+  if (win.frameElement) {
+    const framePosition = getDocumentPosition(win.frameElement);
+    return {
+      top: framePosition.top + rect.top + scrollTop,
+      left: framePosition.left + rect.left + scrollLeft
+    };
+  }
+
+  return {
+    top: rect.top + scrollTop,
+    left: rect.left + scrollLeft
+  };
+}
+
 // function sortThreads(threads: HTMLElement[], anchors: HTMLElement[]): HTMLElement[] {
 //   // sort anchors by top and then re-map the sorted indices back to threads.
 

@@ -1,25 +1,26 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { NoteAnchor } from './NoteAnchor';
 import { Reviewable } from './Reviewable';
 
-function _HighlightAnchor({ source, el, type }: Anchor) {
+function _HighlightAnchor({ source, target }: Anchor) {
   const [dom, setDOM] = useState<string>();
 
+  // For highlight annotations, we extract the DOM and render it
+  // within a separate editor to create interactivity.
   useEffect(() => {
-    // For highlight annotations, we extract the DOM and render it
-    // within a separate editor to create interactivity.
-    if (type === 'highlight') {
-      setDOM(el.innerHTML);
-      el.innerHTML = '';
+    if (!target) {
+      return;
     }
-  }, [el, type]);
 
-  if (!dom) {
+    setDOM(target.innerHTML);
+    target.innerHTML = '';
+  }, [target]);
+
+  if (!dom || !target) {
     return <></>;
   }
 
-  return createPortal(<Reviewable name={source} content={dom} />, el);
+  return createPortal(<Reviewable name={source} content={dom} />, target);
 }
 
 export const HighlightAnchor = memo<Anchor>(_HighlightAnchor);

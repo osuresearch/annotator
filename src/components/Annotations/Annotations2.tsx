@@ -3,7 +3,7 @@ import { Code, Details, Divider, Heading, Item, Stack, UnstyledList } from '@osu
 import { Thread } from '../Thread';
 import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import { useAnchorsContext } from '../../hooks/useAnchorsContext';
-import { reflowWithBestFit } from 'src/utils';
+import { useCellList } from '../../hooks/useCellList';
 
 function Debug() {
   const { annotations, focused } = useAnnotationsContext();
@@ -37,9 +37,15 @@ export type AnnotationsProps = {
 };
 
 export const Annotations = forwardRef<HTMLDivElement>(({}, ref) => {
+  // Source of our annotation data
   const { annotations } = useAnnotationsContext();
-  const [filtered, setFiltered] = useState<Annotation[]>();
-  const { getAnchorTop, reflow } = useAnchorsContext();
+
+  console.log('redraw anno');
+  // List management for adding / removing / sorting threads
+  const cellListProps = useCellList();
+
+  // Subset of annotations we want to render as threads
+  const [threads, setThreads] = useState<Annotation[]>();
 
   // Sort and filter annotation based on motivation (thread vs reply)
   // and the position of the anchor (target) within the DOM so that
@@ -47,42 +53,17 @@ export const Annotations = forwardRef<HTMLDivElement>(({}, ref) => {
   useEffect(() => {
     if (!annotations) return;
 
-    setFiltered(
-      annotations
-        .filter((a) => a.motivation !== 'replying')
-        .sort((a, b) => {
-          const asel = a.target.selector;
-          const bsel = b.target.selector;
+    console.log('update threads');
 
-          const aTop = getAnchorTop({
-            source: a.target.source,
-            annotationId: a.id
-          });
+    const filtered = annotations.filter((a) => a.motivation !== 'replying');
 
-          const bTop = getAnchorTop({
-            source: b.target.source,
-            annotationId: b.id
-          });
-
-          console.log('top', a.target.source, a.id, aTop);
-          // console.log('b top', b.target.source, b.id, aTop);
-
-          if (asel?.type === 'RUIAnnoSelector' && bsel?.type === 'RUIAnnoSelector') {
-            return aTop < bTop ? -1 : 1;
-          }
-
-          // TODO: Sorting Adobe selectors
-          return 0;
-        })
-    );
-
-    reflow();
-  }, [annotations, getAnchorTop, reflow]);
+    setThreads(filtered);
+  }, [annotations]);
 
   return (
     <div ref={ref}>
-      {filtered?.map((anno) => (
-        <Thread key={anno.id} node={anno} />
+      {threads?.map((anno) => (
+        <Thread key={anno.id} node={anno} cellListProps={cellListProps} />
       ))}
 
       <Debug />

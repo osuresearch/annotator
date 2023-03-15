@@ -61,6 +61,22 @@ export type AnnotationsContext = {
    * All annotations
    */
   annotations: Annotation[];
+
+  // /**
+  //  * All *visible* annotation threads.
+  //  *
+  //  * This omits replies and threads that have
+  //  * been permanently deleted.
+  //  *
+  //  * Threads are sorted on their anchor positions.
+  //  */
+  // threads: Annotation[];
+
+  // TODO: this is where reflow *should* happen.
+  // Or an external script for handling it outside of using refs.
+  // Just pull and iterate fucking thread IDs and position them.
+  // Who cares, fuck it. It's all outside React anyway.
+  // that's actually a good point... we're doing this all outside React.
 };
 
 export const Context = createContext<AnnotationsContext>({} as AnnotationsContext);
