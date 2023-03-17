@@ -25,9 +25,6 @@ type Anchor = {
    * Target element to anchor *to*
    */
   target?: HTMLElement;
-
-  /** Elements linked to this anchor. Typically thread containers */
-  links: HTMLElement[];
 };
 
 type AnnotationID = string;

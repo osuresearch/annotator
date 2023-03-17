@@ -140,14 +140,15 @@ export function PDFDocument({ clientId, url, filename }: PDFDocumentProps) {
   return (
     <Group h="800px" grow>
       <div ref={ref} id={id} style={{ width: 800 }} />
-      <Stack
+        <Annotations />
+      {/* <Stack
         align="stretch"
         maw={400}
         mah="100%"
         style={{ overflowY: 'scroll', overflowX: 'hidden' }}
       >
         <Annotations />
-      </Stack>
+      </Stack> */}
     </Group>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
+import React, { useLayoutEffect, useImperativeHandle, useRef, useState } from 'react';
 import { Code, Group, Heading, Paper, Stack } from '@osuresearch/ui';
 import Frame from 'react-frame-component';
 import styled from 'styled-components';
@@ -74,7 +74,7 @@ export function ExternalDocument(props: ExternalDocumentProps) {
   // TODO: This isn't particularly performant (or smart) but I don't
   // want the annotations inside the frame without a scoped CSS reset.
   // Any other ideas?
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!frameRef.current) {
       return;
     }
@@ -95,6 +95,8 @@ export function ExternalDocument(props: ExternalDocumentProps) {
       if (container && prev !== container.scrollHeight) {
         prev = container.scrollHeight;
         console.log('resize', prev);
+
+        // Some additional padding is added for... reasons.
         frameRef.current.height = prev + 64 + 'px';
       }
 

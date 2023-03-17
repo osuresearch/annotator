@@ -46,7 +46,7 @@ export const Simple: Story = {
             position: relative;
             border: 1px solid black;
             max-width: 50%;
-            padding: 16px;
+            padding: 4px;
             margin: 4px;
           }
         </style>

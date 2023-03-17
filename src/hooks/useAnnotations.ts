@@ -61,22 +61,6 @@ export type AnnotationsContext = {
    * All annotations
    */
   annotations: Annotation[];
-
-  // /**
-  //  * All *visible* annotation threads.
-  //  *
-  //  * This omits replies and threads that have
-  //  * been permanently deleted.
-  //  *
-  //  * Threads are sorted on their anchor positions.
-  //  */
-  // threads: Annotation[];
-
-  // TODO: this is where reflow *should* happen.
-  // Or an external script for handling it outside of using refs.
-  // Just pull and iterate fucking thread IDs and position them.
-  // Who cares, fuck it. It's all outside React anyway.
-  // that's actually a good point... we're doing this all outside React.
 };
 
 export const Context = createContext<AnnotationsContext>({} as AnnotationsContext);
@@ -149,7 +133,6 @@ export function useAnnotations(
         // TODO: Optional setSelected
         append(anno);
         setSelectedKeys(new Set([anno.id]));
-        console.log('startThread', anno);
         return anno;
       },
 
@@ -214,9 +197,4 @@ export function useAnnotations(
     };
     // Probably don't need exhaustive deps, I *think* append/getItem/etc are stable?
   }, [items, selectedKeys, agent, role]);
-
-  // some way to pull comments for a specific page / field?
-  // various filtering behaviour? (reviewers, staff, etc)
-  // resolving/unresolving
-  // replying
 }

@@ -1,4 +1,4 @@
-import React, { Key, useMemo, useState } from 'react';
+import React, { createContext, Key, useMemo, useState } from 'react';
 import { useListData } from 'react-stately';
 
 export type CellListItem = {
@@ -28,7 +28,7 @@ export type CellListItem = {
   height: number;
 };
 
-export type UseCellListReturn = {
+export type CellListContext = {
   items: CellListItem[];
 
   focused: CellListItem | undefined;
@@ -45,80 +45,95 @@ export type UseCellListReturn = {
    * Insertion will potentially trigger reflow for all other items
    * to avoid overlap of cells.
    */
-  addItem: (id: Key, anchorCell: number, height?: number) => void;
+  addItem: (item: CellListItem) => void;
 
   removeItem: (id: Key) => void;
 
-  setHeight: (id: Key, height: number) => void;
+  updateItem: (id: Key, item: CellListItem) => void;
 };
+
+export type UseCellListReturn = CellListContext;
+
+export const Context = createContext<CellListContext>({} as CellListContext)
 
 export function useCellList() {
   // React-stately will do the heavy lifting of list management
-  const { items, getItem, append, insert, remove, update, selectedKeys, setSelectedKeys } =
+  const { items, getItem, append, insertBefore, insert, remove, update, selectedKeys, setSelectedKeys } =
     useListData<CellListItem>({
       getKey: (item) => item.id
     });
 
   /**
-   * Shift all items below the initial cell down so that
+   * Shift all items below (higher anchor) the initial cell down so that
    * no items overlap the initial cell or each other.
    *
-   * Assumes items are sorted already by their anchor cells
+   * Assumes items are sorted already by their anchorCell, lowest-first
    */
-  const reflowBelow = (initialCell: number) => {
-    let prevBottom = initialCell;
+  const reflowBelow = (initialIndex: number, lowestCell: number) => {
+    let prevBottom = lowestCell;
 
-    for (let i = items.length - 1; i >= 0; i--) {
+    console.log('reflowBelow', initialIndex, lowestCell);
+    for (let i = initialIndex + 1; i < items.length; i++) {
       const current = items[i];
-      if (current.cell < initialCell) {
-        continue;
-      }
-
       if (current.cell < prevBottom) {
         current.cell = prevBottom;
         prevBottom = current.cell + current.height;
+        console.log('shift down', current.id);
 
         update(current.id, { ...current });
       } else {
         // Nothing more to shift down
+
+        // TODO: if we reflow large items and eventually create
+        // a massive gap, we need a way to snap items back
+        // to their anchors if they get too far and we have
+        // enough room for it.
         break;
       }
     }
+
   };
 
-  const reflowAbove = (initialCell: number) => {
-    let prevTop = initialCell;
+  const reflowAbove = (initialIndex: number, highestCell: number) => {
+    let prevTop = highestCell;
 
-    for (let i = items.length - 1; i >= 0; i--) {
+    console.log('reflowAbove', initialIndex, highestCell);
+    for (let i = initialIndex - 1; i >= 0; i--) {
       const current = items[i];
-
-      if (current.cell >= initialCell) {
-        continue;
-      }
 
       if (current.cell + current.height > prevTop) {
         current.cell = prevTop - current.height;
         prevTop = current.cell;
+        console.log('shift up', current.id);
 
         update(current.id, { ...current });
       } else {
         // Nothing more to shift.
+
+        // TODO: See the reflowBelow issue
         break;
       }
     }
   };
+
+  const getIndex = (id: Key) => items.findIndex((i) => i.id === id);
 
   const selectedKey = (selectedKeys as Set<Key>).values().next().value;
   const focused = selectedKey ? getItem(selectedKey) : undefined;
 
   console.log('useCellList', items);
-  return {
+  return <UseCellListReturn>{
     items,
     focused,
     getItem,
 
-    focus: (id: Key) => {
+    focus: (id) => {
       const item = getItem(id);
+      if (!item) {
+        return;
+      }
+
+      const index = getIndex(id);
 
       // Select and shift it back to its anchor
       setSelectedKeys(new Set([id]));
@@ -127,51 +142,55 @@ export function useCellList() {
         cell: item.anchorCell
       });
 
-      reflowAbove(item.anchorCell);
-      reflowBelow(item.anchorCell + item.height);
+      // Will need to shift everything around this item
+      // to make sure it aligns to its anchor correctly
+      reflowAbove(index, item.cell);
+      reflowBelow(index, item.cell + item.height);
     },
 
     resetFocus: () => {
       setSelectedKeys(new Set([]));
     },
 
-    addItem: (id: Key, anchorCell: number, height = 1) => {
-      const newItem: CellListItem = {
-        id,
-        cell: anchorCell,
-        anchorCell,
-        height
-      };
-
-      reflowAbove(anchorCell);
+    addItem: (item) => {
+      if (getItem(item.id)) {
+        throw new Error('CellListItem already exists with that ID');
+      }
 
       // Find an insertion point based on anchor cell
       // and reflow all items below that point
       for (let i = 0; i < items.length; i++) {
-        if (items[i].anchorCell > anchorCell) {
-          reflowBelow(anchorCell + height);
+        if (items[i].anchorCell >= item.anchorCell) {
+          // Make room for the new insertion
+          reflowAbove(i, item.anchorCell);
+          reflowBelow(i - 1, item.anchorCell + item.height);
 
-          insert(i, newItem);
+          insert(i, item);
           return;
         }
       }
 
-      // TODO: If cell is WAY off from anchorCell
-      // the reflow might have some issues.
-
-      append(newItem);
+      append(item);
     },
 
-    removeItem: (id: Key) => {
+    removeItem: (id) => {
       remove(id);
     },
 
-    setHeight: (id: Key, height: number) => {
-      const item = getItem(id);
-      item.height = height;
+    updateItem: (id, item) => {
+      const existing = getItem(id);
+      const index = getIndex(id);
 
-      // Shift all items under this down
-      reflowBelow(item.cell + item.height);
+      // If the item has been forcibly moved
+      // or resized - reflow nearby items
+      if (item.cell !== existing.cell) {
+        reflowAbove(index, item.cell);
+        reflowBelow(index, item.cell + item.height);
+      } else if (item.height !== existing.height) {
+        reflowBelow(index, item.cell + item.height);
+      }
+
+      update(id, item);
     }
   };
 }
