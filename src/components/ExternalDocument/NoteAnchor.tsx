@@ -92,7 +92,14 @@ function NoteAnchorImpl({ source, el }: { source: string; el: HTMLElement }) {
   );
 }
 
-export function NoteAnchor({ source, target }: Anchor) {
+export function NoteAnchor({ source }: Anchor) {
+  const { document } = useFrame();
+  const [target, setTarget] = useState<HTMLElement>();
+
+  useEffect(() => {
+    setTarget(document?.getElementById(source) ?? undefined);
+  }, [source, document]);
+
   if (!target) {
     return null;
   }

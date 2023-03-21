@@ -1,8 +1,6 @@
 import { Mark } from '@tiptap/core';
 import { mergeAttributes } from '@tiptap/react';
 
-import { CommentView } from './CommentView';
-
 declare module '@tiptap/core' {
   interface Commands<ReturnType> {
     comment: {

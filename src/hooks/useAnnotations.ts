@@ -2,14 +2,19 @@ import { createContext, Key, useCallback, useEffect, useMemo, useState } from 'r
 import { v4 as uuidv4 } from 'uuid';
 import { useListData } from 'react-stately';
 
+export type AnnotationInteractionState = {
+  isEditingComment: boolean;
+  focused?: Annotation;
+}
+
 export type AnnotationsContext = {
   /**
    * Start a new annotation thread and focus it
    *
-   * @param source Field or document we are annotating
-   * @param motivation Why the annotation is being created
-   * @param selector Target of the annotation
-   * @param id Optional IRI of the annotation. If omitted, one will be generated.
+   * @param source      Field or content we are annotating
+   * @param motivation  Why the annotation is being created
+   * @param selector    Target of the annotation
+   * @param id          Optional IRI of the annotation. If omitted, one will be generated.
    *
    * @returns the new Annotation
    */
@@ -33,9 +38,7 @@ export type AnnotationsContext = {
   /**
    * Focus an annotation, if possible
    */
-  focus: (id: AnnotationID, target?: DOMRect) => void;
-
-  clearFocus: () => void;
+  focus: (id?: AnnotationID) => void;
 
   patch: (id: AnnotationID, action: (prev: Annotation) => Annotation) => void;
 
@@ -61,12 +64,25 @@ export type AnnotationsContext = {
    * All annotations
    */
   annotations: Annotation[];
+
+  isEditingComment: boolean
+  setIsEditingComment: (value: boolean) => void;
 };
 
 export const Context = createContext<AnnotationsContext>({} as AnnotationsContext);
 
 export type UseAnnotationsReturn = AnnotationsContext;
 
+/**
+ * Manage a list of annotations that reference a source document.
+ *
+ * The context returned by this hook is used by a provider
+ * to expose a shared state for a set of annotation components.
+ *
+ * @param initialItems  Existing annotations to preload
+ * @param agent         Individual (or system) to log new annotations under
+ * @param role          Agent's role in relation to the annotated document.
+ */
 export function useAnnotations(
   initialItems: Annotation[] = [],
   agent: AnnotationAgent,
@@ -80,21 +96,19 @@ export function useAnnotations(
     }
   );
 
-  return useMemo<UseAnnotationsReturn>(() => {
+  const [isEditingComment, setIsEditingComment] = useState(false);
+
+  return useMemo(() => {
     const focusedAnnotationID = (selectedKeys as Set<Key>).values().next().value;
 
-    return {
+    return <UseAnnotationsReturn>{
       annotations: items,
       focused: focusedAnnotationID ? getItem(focusedAnnotationID) : undefined,
+      isEditingComment,
+      setIsEditingComment,
 
-      focus(id, target) {
-        // TODO: Use target rect.
-        setSelectedKeys(new Set([id]));
-      },
-
-      clearFocus() {
-        console.log('clearFocus');
-        setSelectedKeys(new Set());
+      focus(id) {
+        setSelectedKeys(new Set(id ? [id] : []));
       },
 
       createThread(source, motivation, selector, id) {
@@ -195,6 +209,5 @@ export function useAnnotations(
         });
       }
     };
-    // Probably don't need exhaustive deps, I *think* append/getItem/etc are stable?
-  }, [items, selectedKeys, agent, role]);
+  }, [items, isEditingComment, selectedKeys, agent, role]);
 }

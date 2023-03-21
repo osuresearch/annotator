@@ -1,6 +1,7 @@
-import React, { useCallback, useMemo, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useAnnotations, Context } from '../../hooks/useAnnotations';
 import { AnnotationSelection, Context as SelectionContext } from '../../hooks/useAnnotationPicker';
+import { useEditors, Context as EditorsContext } from '../../hooks/useEditors';
 
 export type AnnotationsProviderProps = {
   children: React.ReactNode;
@@ -33,6 +34,7 @@ export function AnnotationsProvider({
   role
 }: AnnotationsProviderProps) {
   const ctx = useAnnotations(initialItems, agent, role);
+  const editors = useEditors();
 
   const [selected, select] = useState<AnnotationSelection>();
 
@@ -47,7 +49,11 @@ export function AnnotationsProvider({
 
   return (
     <Context.Provider value={ctx}>
-      <SelectionContext.Provider value={selectionCtx}>{children}</SelectionContext.Provider>
+      <EditorsContext.Provider value={editors}>
+        <SelectionContext.Provider value={selectionCtx}>
+          {children}
+        </SelectionContext.Provider>
+      </EditorsContext.Provider>
     </Context.Provider>
   );
 }

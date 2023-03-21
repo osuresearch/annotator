@@ -1,5 +1,4 @@
 import { useEffect, useMemo, useState } from 'react';
-import { useAnchorsContext } from './useAnchorsContext';
 import { useAnnotationsContext } from './useAnnotationsContext';
 
 export type UseThreadReturn = {
@@ -20,7 +19,7 @@ export type UseThreadReturn = {
   /** Remove (delete) the thread */
   remove: (recoverable?: boolean) => void;
 
-  /** Undo a previously removed thread */
+  /** Undo a previously removed thread, if possible */
   recover: () => void;
 
   /** Resolve the thread as complete */
@@ -32,15 +31,18 @@ export type UseThreadReturn = {
   /** Add a reply to the thread */
   addReply: (message: string) => Annotation;
 
+  /** Update a reply in the thread */
   updateReply: (id: AnnotationID, message: string) => void;
 
+  /** Remove (delete) a reply */
   removeReply: (id: AnnotationID, recoverable?: boolean) => void;
 
+  /** Recover a previously deleted reply, if possible */
   recoverReply: (id: AnnotationID) => void;
 };
 
 export function useThread(id: AnnotationID): UseThreadReturn {
-  const { annotations, createThread, createReply, updateBody, focused, patch, focus } =
+  const { annotations, createReply, updateBody, focused, patch, focus } =
     useAnnotationsContext();
 
   const [thread, setThread] = useState<Annotation>();
@@ -88,6 +90,10 @@ export function useThread(id: AnnotationID): UseThreadReturn {
             deleted: true,
             recoverable
           }));
+
+        if (thread && focused?.id === thread.id) {
+          focus(undefined);
+        }
       },
 
       recover: () => {

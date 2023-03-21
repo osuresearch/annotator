@@ -6,9 +6,9 @@ type Rect = {
 };
 
 type AnchorRef = {
+  id?: string;
   source: string;
-  annotationId?: AnnotationID;
-  type?: RUIAnnoSubtype;
+  type?: RUIAnnoSubtype | 'tmp';
 };
 
 type NewAnchor = Omit<Anchor, 'id'> & {
@@ -17,14 +17,13 @@ type NewAnchor = Omit<Anchor, 'id'> & {
 
 type Anchor = {
   id: string;
-  type?: RUIAnnoSubtype;
+  type?: RUIAnnoSubtype | 'tmp';
   source: string;
-  annotationId?: AnnotationID;
 
   /**
-   * Target element to anchor *to*
+   * Target rect in the document to anchor *to*
    */
-  target?: HTMLElement;
+  target: Rect
 };
 
 type AnnotationID = string;

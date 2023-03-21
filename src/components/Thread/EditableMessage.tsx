@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Box, Button, Group, Stack, TextAreaField } from '@osuresearch/ui';
+import React, { useEffect, useContext } from 'react';
+import { Button, Group, Stack, Text } from '@osuresearch/ui';
 import { FocusScope, useFocusWithin } from 'react-aria';
 import { EditorContent, useEditor } from '@tiptap/react';
 import Placeholder from '@tiptap/extension-placeholder';
 import StarterKit from '@tiptap/starter-kit';
 import { getHotkeyHandler } from '@mantine/hooks';
+import styled from 'styled-components';
+import { Context as EditorsContext } from '../../hooks/useEditors';
 
 export type EditableMessageProps = {
   defaultValue: string;
@@ -13,6 +15,18 @@ export type EditableMessageProps = {
   onSave: (value: string) => void;
   onCancel: () => void;
 };
+
+const EditorWrapper = styled.div`
+
+  .ProseMirror {
+    border: 1px solid var(--rui-light);
+    padding: var(--rui-spacing-xs);
+  }
+  .ProseMirror-focused {
+    outline: none;
+    border: 1px solid var(--rui-light);
+  }
+`;
 
 /**
  * Rich text editor with a save/cancel button visible on mount.
@@ -28,13 +42,15 @@ export function EditableMessage({
   onSave,
   onCancel
 }: EditableMessageProps) {
+  const { setActiveEditor } = useContext(EditorsContext);
+
   const { focusWithinProps } = useFocusWithin({
     onBlurWithin: (e) => {
-      if (autosave) {
-        handleSave();
-      } else {
-        handleCancel();
-      }
+      // if (autosave) {
+      //   handleSave();
+      // } else {
+      //   handleCancel();
+      // }
     }
   });
 
@@ -56,10 +72,18 @@ export function EditableMessage({
       return;
     }
 
+    const textContent = editor.getText();
     const content = editor.getHTML();
+
     editor.chain().clearContent().blur().run();
 
-    onSave(content);
+    setActiveEditor(false);
+    if (textContent.length > 0) {
+      onSave(content);
+    }
+    else {
+      onCancel();
+    }
   };
 
   const handleCancel = () => {
@@ -69,6 +93,7 @@ export function EditableMessage({
 
     editor.chain().clearContent().blur().run();
 
+    setActiveEditor(false);
     onCancel();
   };
 
@@ -76,24 +101,26 @@ export function EditableMessage({
     if (editor) {
       editor.commands.focus('end');
     }
+
+    setActiveEditor(true);
   }, [editor]);
 
   return (
-    <FocusScope contain restoreFocus autoFocus>
-      <Stack align="stretch" {...focusWithinProps}>
-        <Box p="xs" className="rui-border-2">
-          <EditorContent
-            editor={editor}
-            onKeyDown={getHotkeyHandler([['mod+Enter', handleSave]])}
-          />
-          Hotkey: mod+Enter to save
-        </Box>
+    // <FocusScope contain restoreFocus autoFocus>
+    <Stack align="stretch" fs="sm">
+      <EditorWrapper>
+        <EditorContent
+          editor={editor}
+          onKeyDown={getHotkeyHandler([['mod+Enter', handleSave]])}
+        />
+      </EditorWrapper>
 
-        <Group justify="end">
-          <Button onPress={handleSave}>Save</Button>
-          <Button onPress={handleCancel}>Cancel</Button>
-        </Group>
-      </Stack>
-    </FocusScope>
+      <Group justify="end" align="center">
+        <Text fs="xs" c="dark">Tip: Press Ctrl+Enter to save.</Text>
+        <Button variant="subtle" onPress={handleCancel}>Cancel</Button>
+        <Button onPress={handleSave}>Save</Button>
+      </Group>
+    </Stack>
+    // </FocusScope>
   );
 }

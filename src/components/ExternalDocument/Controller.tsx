@@ -1,12 +1,12 @@
 import React, { useEffect, memo } from 'react';
 import { useFrame } from 'react-frame-component';
 import { StyleSheetManager } from 'styled-components';
-import { v4 as uuidv4 } from 'uuid';
 
 import { HighlightAnchor } from './HighlightAnchor';
 import { NoteAnchor } from './NoteAnchor';
 
 import { useAnchorsContext } from '../../hooks/useAnchorsContext';
+import { getDocumentPosition } from '../../utils';
 
 function _Controller() {
   const { document } = useFrame();
@@ -26,25 +26,31 @@ function _Controller() {
 
     // Elements that can have notes attached to them
     document.querySelectorAll<HTMLElement>('[data-comment-block]').forEach((el) => {
+      const pos = getDocumentPosition(el);
       anchors.push({
         type: 'note',
         source: el.id,
-        target: el,
-        links: []
+        target: {
+          x: pos.left,
+          y: pos.top,
+          width: 0, height: 0
+        },
       });
     });
 
     // Elements that can have regions of text highlighted
     document.querySelectorAll<HTMLElement>('[data-comment-inline]').forEach((el) => {
+      const pos = getDocumentPosition(el);
       anchors.push({
         type: 'highlight',
         source: el.id,
-        target: el,
-        links: []
+        target: {
+          x: pos.left,
+          y: pos.top,
+          width: 0, height: 0
+        },
       });
     });
-
-    console.log('add anchors', anchors);
 
     addAnchors(anchors);
   }, [document]);
@@ -53,7 +59,7 @@ function _Controller() {
     <div>
       <StyleSheetManager target={document.head}>
         <div>
-          {items.map((anchor) =>
+          {items.filter((a) => a.type !== 'tmp').map((anchor) =>
             anchor.type === 'highlight' ? (
               <HighlightAnchor key={anchor.id} {...anchor} />
             ) : (
@@ -68,6 +74,6 @@ function _Controller() {
 
 /**
  * Controller is injected into the iframe DOM for
- * managing thread anchors and global states.
+ * managing targets (anchors) for annotations
  */
 export const Controller = memo(_Controller);

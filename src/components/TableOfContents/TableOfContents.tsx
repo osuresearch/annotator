@@ -1,4 +1,4 @@
-import { Button, Stack, ToggleButton } from '@osuresearch/ui';
+import { Button, Icon, IconButton, Stack, ToggleButton } from '@osuresearch/ui';
 import React, { useEffect, useState } from 'react';
 
 type SectionAnchorProps = {
@@ -82,9 +82,9 @@ export function TableOfContents({ document }: TableOfContentsProps) {
 
   return (
     <Stack>
-      <ToggleButton variant="default" onChange={(isSelected) => setOpen(!!isSelected)}>
-        TOC
-      </ToggleButton>
+      <IconButton label="Toggle table of contents" variant="fade" name="bars"
+        onPress={() => setOpen(!open)}
+      />
 
       {open && <SectionList anchors={anchors} />}
     </Stack>

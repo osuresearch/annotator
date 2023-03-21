@@ -24,21 +24,21 @@ export function getDocumentPosition(el: Element): { top: number; left: number } 
   }
 
   const rect = el.getBoundingClientRect();
-  const scrollLeft = win.scrollY || doc.documentElement.scrollLeft;
+  const scrollLeft = win.scrollX || doc.documentElement.scrollLeft;
   const scrollTop = win.scrollY || doc.documentElement.scrollTop;
 
   // If the element is in an iframe, we need to recurse upward.
   if (win.frameElement) {
     const framePosition = getDocumentPosition(win.frameElement);
     return {
-      top: framePosition.top + rect.top + scrollTop,
-      left: framePosition.left + rect.left + scrollLeft
+      top: Math.round(framePosition.top + rect.top + scrollTop),
+      left: Math.round(framePosition.left + rect.left + scrollLeft)
     };
   }
 
   return {
-    top: rect.top + scrollTop,
-    left: rect.left + scrollLeft
+    top: Math.round(rect.top + scrollTop),
+    left: Math.round(rect.left + scrollLeft)
   };
 }
 
@@ -130,4 +130,16 @@ export function reflowWithBestFit(threads: HTMLElement[], anchors: HTMLElement[]
   for (let i = 0; i < threads.length; i++) {
     threads[i].style.top = anchors[i].offsetTop + 'px';
   }
+}
+
+export function stripTags(html: string) {
+  // TODO: Replace with a more reliant solution.
+  if (window) {
+    const tmp = document.createElement('div');
+    tmp.innerHTML = html;
+    return (tmp.textContent || tmp.innerText || '').trim();
+ }
+
+ // SSR version. May not be consistent.
+ return html.replace(/(<([^>]+)>)/gi, '').trim();
 }

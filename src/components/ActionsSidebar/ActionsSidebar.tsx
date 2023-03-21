@@ -8,11 +8,11 @@ import { IconButton, Tooltip } from '@osuresearch/ui';
 const Panel = styled.div`
   position: absolute;
   right: 0;
-  border: 2px solid red;
   transition: 200ms;
-  background: white;
+  background: var(--rui-light);
+  border: 2px solid var(--rui-light-shade);
   flex-direction: column;
-  margin-right: -16px;
+  margin-right: 4px;
 `;
 
 const Button = styled.button`
@@ -20,7 +20,7 @@ const Button = styled.button`
   border: 0;
 `;
 
-export function SelectionActions() {
+export function ActionsSidebar() {
   const { selected, select } = useAnnotationPicker();
   const { createThread } = useAnnotationsContext();
   const [isFocusWithin, onFocusWithinChange] = useState(false);
@@ -36,6 +36,17 @@ export function SelectionActions() {
     if (!active) {
       return;
     }
+
+    // Now I need context for highlights.
+    // if (selected?.type === 'highlight') {
+    //   const thread = createThread(selected.source, 'commenting', {
+    //     type: 'RUIAnnoSelector',
+    //     subtype: 'highlight',
+    //     top: selected.top,
+    //     start: selected.start,
+    //     end: selected.end
+    //   });
+    // }
 
     const thread = createThread(active.source, 'commenting', {
       type: 'RUIAnnoSelector',
@@ -89,7 +100,7 @@ export function SelectionActions() {
 
       <Tooltip contentSlot="Add a comment">
         <IconButton
-          name="image"
+          name={active?.type === 'note' ? "image" : 'edit'}
           label="Add a comment"
           size={24}
           onPress={() => startThread('commenting')}

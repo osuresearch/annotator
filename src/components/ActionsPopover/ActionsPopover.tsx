@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-export type AnnotationPopoverProps = {
+export type ActionsPopoverProps = {
   coords: Rect;
   onAddComment: () => void;
 };
@@ -23,7 +23,7 @@ const AddHighlightButton = styled.button`
   }
 `;
 
-export function AnnotationPopover({ coords, onAddComment }: AnnotationPopoverProps) {
+export function ActionsPopover({ coords, onAddComment }: ActionsPopoverProps) {
   return (
     <AddHighlightButton
       style={{

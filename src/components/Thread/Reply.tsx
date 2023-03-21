@@ -13,11 +13,12 @@ import {
   Icon,
   Link
 } from '@osuresearch/ui';
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { useThread } from '../../hooks/useThread';
 import { EditableMessage } from './EditableMessage';
 import { Profile } from './Profile';
 import { ReadOnlyMessage } from './ReadOnlyMessage';
+import { Context as EditorsContext } from '../../hooks/useEditors';
 
 export type ReplyProps = {
   thread: Annotation;
@@ -29,6 +30,7 @@ export type ReplyProps = {
  */
 export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, node }, ref) => {
   const { focused, replies, updateReply, removeReply, recoverReply } = useThread(thread.id);
+  const { hasActiveEditor } = useContext(EditorsContext);
 
   const [isEditing, setEditing] = useState(false);
 
@@ -45,6 +47,9 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
     if (key === 'delete') {
       removeReply(node.id);
     }
+    else if (key === 'edit') {
+      setEditing(true);
+    }
 
     return true;
   };
@@ -54,30 +59,15 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
     setEditing(false);
   };
 
-  // The first comment from an individual in a thread gets
-  // a role chip. The rest don't to reduce UI noise.
-  // TODO: Clean this up. It's just a hack atm.
-  let isFirstFromPerson = node.creator.id !== thread.creator.id;
-  let found = false;
-  replies.forEach((r) => {
-    if (found) {
-      return;
-    }
-
-    if (r.id === node.id) {
-      found = true;
-      return;
-    }
-
-    if (r.creator.id === node.creator.id) {
-      isFirstFromPerson = false;
-    }
-  });
+  // Non-recoverable deleted replies are just hidden.
+  if (deleted && !recoverable) {
+    return null;
+  }
 
   // Recoverable deleted replies get a placeholder to undo
   if (deleted && recoverable) {
     return (
-      <Text p="xs" fs="sm">
+      <Text p="md" fs="sm">
         Deleted reply.{' '}
         <Link as="button" onClick={() => recoverReply(node.id)}>
           (undo)
@@ -86,34 +76,23 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
     );
   }
 
-  // Non-recoverable deleted replies are just hidden.
-  if (deleted) {
-    return null;
-  }
-
   return (
-    <Paper ml="sm" mt="sm">
-      <Stack align="stretch" gap={0} pl="xs" tabIndex={0}>
-        <Group justify="apart" align="center">
-          <Profile node={node} showRole={!isFirstFromPerson} />
+    <Stack align="stretch" gap={0} pl="xl" tabIndex={0}>
+      <Group justify="apart" align="center" pb="md">
+        <Profile node={node} showRole />
 
-          {!resolved && (
-            <div>
-              <IconButton
-                size={16}
-                iconProps={{ p: 'xxs' }}
-                name="edit"
-                label="Edit reply"
-                onPress={() => setEditing(true)}
-              />
+        {!resolved && (
+          <Menu label={<></>} onAction={onAction} disabledKeys={hasActiveEditor ? ['edit', 'delete'] : []}>
 
-              <Menu label="More actions" /*asMoreOptions*/ onAction={onAction}>
-                <Item key="delete">Delete reply</Item>
-              </Menu>
-            </div>
-          )}
-        </Group>
+            {/* TODO: Disable when hasActiveEditor.
+              See: https://github.com/osuresearch/ui/issues/54 */}
+            <Item key="edit">Edit reply</Item>
+            <Item key="delete"><Text c="error">Delete</Text></Item>
+          </Menu>
+        )}
+      </Group>
 
+      <Group pl="md">
         {isEditing ? (
           <EditableMessage
             defaultValue={defaultValue}
@@ -123,13 +102,7 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
         ) : (
           <ReadOnlyMessage message={defaultValue} />
         )}
-
-        {focused && !isEditing && (
-          <Text c="dark" fs="xs">
-            {new Date(node.created).toLocaleString()}
-          </Text>
-        )}
-      </Stack>
-    </Paper>
+      </Group>
+    </Stack>
   );
 });

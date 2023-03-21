@@ -99,7 +99,7 @@ export const Simple: Story = {
 
           <p>Content after section 2 reviewables</p>
 
-          <h3>Heading for subsection 2.1</h3>
+          <h3 id="heading2-1" data-comment-block>Heading for subsection 2.1</h3>
 
           <div id="section2-1" data-comment-section="Subsection 2.1" data-comment-section-level="1">
             <div id="field5" data-comment-inline>

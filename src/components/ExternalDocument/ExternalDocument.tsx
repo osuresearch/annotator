@@ -3,12 +3,12 @@ import { Code, Group, Heading, Paper, Stack } from '@osuresearch/ui';
 import Frame from 'react-frame-component';
 import styled from 'styled-components';
 
-import { Annotations } from '../Annotations';
 import { Controller } from './Controller';
-import { TableOfContents } from './TableOfContents';
-import { SelectionActions } from './SelectionActions';
+import { TableOfContents } from '../TableOfContents/TableOfContents';
+import { ActionsSidebar } from '../ActionsSidebar';
 
 import { useAnchors, Context } from '../../hooks/useAnchors';
+import { ThreadList } from '../ThreadList';
 
 // Styles to inject into the inner iframe
 // TODO: I hate this. Better solution?
@@ -68,7 +68,7 @@ const A4Page = styled.div`
  */
 export function ExternalDocument(props: ExternalDocumentProps) {
   const frameRef = useRef<HTMLIFrameElement>(null);
-  const annotationsRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   // Sync scroll positions between the frame and annotations aside.
   // TODO: This isn't particularly performant (or smart) but I don't
@@ -84,6 +84,8 @@ export function ExternalDocument(props: ExternalDocumentProps) {
     // It is a bit too frequent since I'm using animation frames, but
     // it may not be an actual problem. Will need to benchmark.
 
+    // Alternatively, useElementSize() may be sufficient if it works with iframes.
+
     let handle: number;
     let prev = 0;
 
@@ -94,7 +96,6 @@ export function ExternalDocument(props: ExternalDocumentProps) {
 
       if (container && prev !== container.scrollHeight) {
         prev = container.scrollHeight;
-        console.log('resize', prev);
 
         // Some additional padding is added for... reasons.
         frameRef.current.height = prev + 64 + 'px';
@@ -105,48 +106,33 @@ export function ExternalDocument(props: ExternalDocumentProps) {
 
     handle = requestAnimationFrame(watch);
     return () => cancelAnimationFrame(handle);
-  }, [frameRef, annotationsRef]);
-
-  // useImperativeHandle(forwardRef, () => ({
-  //   resize: () => iframeRef.current.iFrameResizer.resize(),
-  //   moveToAnchor: (anchor) =>
-  //     iframeRef.current.iFrameResizer.moveToAnchor(anchor),
-  //   sendMessage: (message, targetOrigin) => {
-  //     iframeRef.current.iFrameResizer.sendMessage(message, targetOrigin)
-  //   },
-  // }));
-
-  const [document, setDocument] = useState<Document>();
-
-  const onContentMount = () => {
-    setDocument(frameRef.current?.contentWindow?.document);
-  };
+  }, [frameRef, listRef]);
 
   const ctx = useAnchors();
+  const document = frameRef.current?.contentWindow?.document;
 
   return (
     <Context.Provider value={ctx}>
       <Group bgc="light" justify="center" miw="calc(21cm + 400px)" py="md">
-        {document && <TableOfContents document={document} />}
+        {document && <TableOfContents  document={document} />}
         <Paper w="21cm" miw="21cm" p="xxl" withBorder shadow="md" ml="xxl">
-          <div className="marker" />
           <Frame
             ref={frameRef}
             initialContent={props.content}
             head={<style>{STYLES}</style>}
+            onLoad={(e) => e.stopPropagation()}
             style={{
               width: '100%',
               margin: 0
             }}
-            contentDidMount={onContentMount}
           >
             <Controller />
           </Frame>
 
-          <SelectionActions />
+          <ActionsSidebar />
         </Paper>
         <Stack align="stretch" w={400} miw={400}>
-          <Annotations ref={annotationsRef} />
+          <ThreadList ref={listRef} />
         </Stack>
       </Group>
     </Context.Provider>

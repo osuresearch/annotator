@@ -2,9 +2,9 @@ import { Code, Group, Heading, Stack } from '@osuresearch/ui';
 import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import Frame from 'react-frame-component';
 
-import { Annotations } from '../Annotations';
 import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import { AdobeDCDocument } from './AdobeDCDocument';
+import { ThreadList } from '../ThreadList';
 
 export type PDFDocumentProps = {
   /** Adobe DC services client ID */
@@ -140,7 +140,7 @@ export function PDFDocument({ clientId, url, filename }: PDFDocumentProps) {
   return (
     <Group h="800px" grow>
       <div ref={ref} id={id} style={{ width: 800 }} />
-        <Annotations />
+        <ThreadList />
       {/* <Stack
         align="stretch"
         maw={400}

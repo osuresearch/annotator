@@ -18,25 +18,16 @@ export type AnchorsContext = {
   getAnchor: (ref: AnchorRef) => Anchor | undefined;
 
   /**
-   * Create or update an existing anchor
-   */
-  // addAnchor: (anchor: Anchor) => void;
-
-  /**
    * Create or update multiple anchors
    */
   addAnchors: (anchors: NewAnchor[]) => void;
-
-  setAnchor: (
-    source: string,
-    type: RUIAnnoSubtype,
-    annotationId?: AnnotationID,
-    target?: HTMLElement
-  ) => void;
 };
 
 export const Context = createContext<AnchorsContext>({} as AnchorsContext);
 
+/**
+ * Manage a list of links between annotation bodies and their targets.
+ */
 export function useAnchors() {
   const { items, append, update, remove } = useListData<Anchor>({
     getKey: (item) => item.id
@@ -45,44 +36,25 @@ export function useAnchors() {
   return useMemo<AnchorsContext>(() => {
     const getAnchor = (ref: AnchorRef): Anchor | undefined =>
       items.find(
-        (a) => a.source === ref.source && a.annotationId === ref.annotationId
-        // && (!ref.type || a.type === ref.type)
+        (a) => (ref.id === a.id) || (!ref.id && a.source === ref.source)
       );
-
-    const setAnchor = (
-      source: string,
-      type: RUIAnnoSubtype,
-      annotationId?: AnnotationID,
-      target?: HTMLElement
-    ) => {
-      const existing = getAnchor({ source, annotationId });
-      if (existing) {
-        update(existing.id, {
-          ...existing,
-          target
-        });
-        return;
-      }
-
-      append({
-        id: uuidv4(),
-        type,
-        source,
-        target,
-        annotationId
-      });
-    };
 
     const addAnchors = (anchors: NewAnchor[]) => {
       anchors.forEach((a) => {
         const existing = getAnchor(a);
         if (existing) {
+          // TODO: Optimize. This is a no-op.
+          if (existing.id === a.id
+            && existing.source === a.source
+            && existing.type === a.type
+            && existing.target.y === a.target.y) {
+            return;
+          }
+
           // Merge with existing anchor
           update(existing.id, {
             ...existing,
-
-            // Fallback to existing target
-            target: a.target ?? existing.target,
+            ...a,
           });
           return;
         }
@@ -95,10 +67,11 @@ export function useAnchors() {
       });
     };
 
+    console.log('updated anchors', items);
+
     return <AnchorsContext>{
       items,
       getAnchor,
-      setAnchor,
       addAnchors,
     };
   }, [items, append, update, remove]);

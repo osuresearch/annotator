@@ -1,32 +1,30 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useAnnotationsContext } from './useAnnotationsContext';
 
 export type UseThreadsReturn = {
   /**
-   * Annotation threads associated with the named field
+   * Annotation threads associated with the source
    */
   threads: Annotation[];
 
   /**
-   * Does one of the threads associated with the named
-   * field have the user's focus?
+   * Does one of the threads associated with the
+   * source have the user's focus?
    */
   isFocused: boolean;
 
   focus: (thread: Annotation) => void;
 
   /**
-   * Add a new thread to this field and focus it
+   * Add a new annotation thread to this source and focus it
    */
   create: (motivation: AnnotationMotivation, selector?: AnnotationSelector) => Annotation;
 };
 
 /**
- * Interact with threads associated with the given field.
+ * Interact with all threads associated with the given source.
  *
- * TODO: Instance handling.
- *
- * @param name              Field name to use when locating associated threads
+ * @param source            Source name to use when locating associated threads
  * @param includeResolved   Should threads that are resolved also be included in the
  *                          returned list of tracked threads
  */
@@ -34,7 +32,6 @@ export function useThreads(source: string, includeResolved = false): UseThreadsR
   const { annotations, focused, createThread, focus } = useAnnotationsContext();
 
   const [threads, setThreads] = useState<Annotation[]>([]);
-  const [isFocused, setIsFocused] = useState(false);
 
   useEffect(() => {
     const visible = annotations.filter((t) => {
@@ -54,9 +51,7 @@ export function useThreads(source: string, includeResolved = false): UseThreadsR
     }
   }, [annotations, source, threads, includeResolved]);
 
-  useEffect(() => {
-    setIsFocused(!!focused && threads.findIndex((t) => t.id === focused.id) >= 0);
-  }, [threads, focused]);
+  const isFocused = !!focused && threads.findIndex((t) => t.id === focused.id) >= 0;
 
   return {
     threads,

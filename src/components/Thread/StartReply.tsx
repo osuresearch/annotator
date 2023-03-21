@@ -1,13 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Group, Stack, UnstyledButton } from '@osuresearch/ui';
 import { EditableMessage } from './EditableMessage';
 import { useThread } from '../../hooks/useThread';
+import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
+import styled from 'styled-components';
+import { Context as EditorsContext } from '../../hooks/useEditors';
 
 export type StartReplyProps = {
   thread: Annotation;
 };
 
+const Root = styled.div`
+  border: 1px solid var(--rui-light);
+  padding: var(--rui-spacing-xs);
+`;
+
 export function StartReply({ thread }: StartReplyProps) {
+  const { hasActiveEditor } = useContext(EditorsContext);
   const [active, setActive] = useState(false);
   const { addReply } = useThread(thread.id);
 
@@ -16,11 +25,23 @@ export function StartReply({ thread }: StartReplyProps) {
     setActive(false);
   };
 
+  const onCancel = () => {
+    setActive(false);
+  }
+
+  const onReply = () => {
+    setActive(true);
+  }
+
   return (
-    <Stack align="stretch">
+    <Stack align="stretch" fs="sm">
       {!active && (
-        <UnstyledButton className="rui-border-2" p="xs" onPress={() => setActive(true)}>
-          <Group>Reply</Group>
+        <UnstyledButton isDisabled={hasActiveEditor} as={Root} onPress={onReply} c="dark">
+          <Group>
+            {hasActiveEditor
+              ? 'Another comment is in progress.'
+              : 'Reply'
+            }</Group>
         </UnstyledButton>
       )}
 
@@ -28,7 +49,7 @@ export function StartReply({ thread }: StartReplyProps) {
         <EditableMessage
           placeholder="Reply"
           onSave={onSave}
-          onCancel={() => setActive(false)}
+          onCancel={onCancel}
           defaultValue=""
         />
       )}

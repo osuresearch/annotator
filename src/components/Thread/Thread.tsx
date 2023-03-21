@@ -11,10 +11,11 @@ import {
   Icon,
   Link,
   cx,
-  Code
+  Code,
+  Box
 } from '@osuresearch/ui';
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { FocusScope } from 'react-aria';
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import { FocusScope, useFocusWithin } from 'react-aria';
 import { useThread } from '../../hooks/useThread';
 import { useAnchorsContext } from '../../hooks/useAnchorsContext';
 import { EditableMessage } from './EditableMessage';
@@ -23,8 +24,8 @@ import { StartReply } from './StartReply';
 import { ReadOnlyMessage } from './ReadOnlyMessage';
 import { isInViewport } from '../../utils';
 import { Profile } from './Profile';
-import { CellListItem, UseCellListReturn } from '../../hooks/useCellList';
-import { AnchoredContainer } from './AnchoredContainer';
+import { AnchoredContainer } from '../AnchoredContainer';
+import { Context as EditorsContext } from '../../hooks/useEditors';
 
 export type ThreadProps = {
   node: Annotation;
@@ -33,10 +34,17 @@ export type ThreadProps = {
 export function Thread({ node }: ThreadProps) {
   const ref = useRef<HTMLDivElement>(null);
   const { getAnchor } = useAnchorsContext();
+  const { hasActiveEditor } = useContext(EditorsContext);
 
+  const body = node.body.find((b) => b.type === 'TextualBody') as AnnotationTextualBody;
+  const state = node.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
+
+  // Threads reference *either* an anchor that references
+  // the same node ID (in the case of highlights) OR
+  // anchors that reference the parent field (target.source)
   const anchorRef: AnchorRef = {
+    id: node.target.selector?.subtype === 'highlight' ? node.id : undefined,
     source: node.target.source,
-    // TODO: The rest.
   }
 
   const anchor = getAnchor(anchorRef);
@@ -48,9 +56,6 @@ export function Thread({ node }: ThreadProps) {
   const [isEditing, setEditing] = useState(false);
   const [isAutofocus, setAutofocus] = useState(false);
 
-  const body = node.body.find((b) => b.type === 'TextualBody') as AnnotationTextualBody;
-  const state = node.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
-
   const defaultValue = body.value;
   const { deleted, recoverable, resolved } = state;
 
@@ -61,7 +66,7 @@ export function Thread({ node }: ThreadProps) {
   // If this thread needs to be focused immediately on mount,
   // and we don't have any content (e.g. someone just started
   // a new thread) - force it into focus mode.
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (!ref.current) return;
 
     if (focused && isInitial) {
@@ -93,7 +98,10 @@ export function Thread({ node }: ThreadProps) {
       resolve();
     } else if (key === 'delete') {
       remove();
+    } else if (key === 'edit') {
+      setEditing(true);
     }
+
     return true;
   };
 
@@ -122,8 +130,20 @@ export function Thread({ node }: ThreadProps) {
     }
   };
 
-  // TODO: Ref can't be changed around due to thread state things.
-  // Need to always keep this thread in the DOM somehow without unmounting.
+  useEffect(() => {
+    if (!ref.current) {
+      return;
+    }
+
+    const onEnter = () => {
+      focus();
+    }
+
+    ref.current.addEventListener('click', onEnter);
+    return () => {
+      ref.current?.removeEventListener('click', onEnter);
+    };
+  }, [ref, focus]);
 
   // Recoverable deleted threads get a placeholder to undo
   if (deleted && recoverable) {
@@ -143,65 +163,55 @@ export function Thread({ node }: ThreadProps) {
   }
 
   return (
-    <FocusScope>
-      <AnchoredContainer id={node.id} el={anchor?.target} focused={focused}>
-        <Paper
-          id={'thread-' + node.id}
-          p="xs"
-          ml="sm"
-          ref={ref}
-          tabIndex={0}
-          onClick={focus}
-          className={cx({
-            'rui-border-2': true,
-            'rui-border-light': !focused,
-            'rui-border-blue': focused,
-          })}
-          // style={{
-          //   position: 'absolute',
-          //   top: 0
-          // }}
-        >
-          <Stack align="stretch" gap={0} pl="xs">
-            {resolved && (
-              <Group justify="apart" align="center">
-                <Profile node={node} />
+    <AnchoredContainer id={node.id} anchor={anchor} focused={focused} gap={16}>
+      <Paper
+        id={'thread-' + node.id}
+        p="xs"
+        ml="xl"
+        ref={ref}
+        tabIndex={0}
+        className={cx({
+          'rui-border-2': true,
+          'rui-border-light': !focused,
+          'rui-border-blue': focused,
+        })}
+        w={400}
+      >
+        <Stack align="stretch" gap="md" px="xs" pb="xs">
+          {resolved && (
+            <Group justify="apart" align="center">
+              <Profile node={node} />
 
-                <Group align="center">
-                  <Chip variant="outline" c="green">
-                    <Icon name="check" /> resolved
-                  </Chip>
-                  <IconButton
-                    size={16}
-                    iconProps={{ p: 'xxs' }}
-                    name="rotate"
-                    label="Reopen"
-                    onPress={reopen}
-                  />
-                </Group>
+              <Group align="center">
+                <Chip variant="outline" c="green">
+                  <Icon name="check" /> resolved
+                </Chip>
+                <IconButton
+                  size={16}
+                  iconProps={{ p: 'xxs' }}
+                  name="rotate"
+                  label="Reopen"
+                  onPress={reopen}
+                />
               </Group>
-            )}
+            </Group>
+          )}
 
-            {!resolved && (
-              <Group justify="apart" align="center">
-                <Profile node={node} showRole />
-                <div>
-                  <IconButton
-                    size={16}
-                    iconProps={{ p: 'xxs' }}
-                    name="edit"
-                    label="Edit comment"
-                    onPress={() => setEditing(true)}
-                  />
-                  <Menu label="More actions" /*asMoreOptions*/ onAction={onAction}>
-                    <Item key="link">Link to thread</Item>
-                    <Item key="resolve">Resolve thread</Item>
-                    <Item key="delete">Delete thread</Item>
-                  </Menu>
-                </div>
-              </Group>
-            )}
+          {!resolved && (
+            <Group justify="apart" align="center">
+              <Profile node={node} showRole />
+              {/* TODO: Disable when hasActiveEditor.
+                See: https://github.com/osuresearch/ui/issues/54 */}
+              <Menu label={<></>} /*"Actions" /*asMoreOptions*/ onAction={onAction}
+                disabledKeys={hasActiveEditor ? ['edit', 'resolve', 'delete'] : []}>
+                <Item key="edit">Edit comment</Item>
+                <Item key="resolve">Resolve thread</Item>
+                <Item key="delete"><Text c="error">Delete thread</Text></Item>
+              </Menu>
+            </Group>
+          )}
 
+          <Box pl="sm">
             {isEditing ? (
               <EditableMessage
                 defaultValue={defaultValue}
@@ -213,25 +223,19 @@ export function Thread({ node }: ThreadProps) {
               <ReadOnlyMessage message={defaultValue} />
             )}
 
-            {focused && !isEditing && (
-              <Text c="dark" fs="xs">
-                {new Date(node.created).toLocaleString()}
-              </Text>
-            )}
-
             {resolved && replies.length > 0 && !focused && (
               <Text fs="xs" fw="bold">
                 {replies.length === 1 ? '1 more reply' : replies.length + ' more replies'}
               </Text>
             )}
+          </Box>
 
-            {(!resolved || focused) &&
-              replies.map((reply) => <Reply key={reply.id} thread={node} node={reply} />)}
+          {(!resolved || focused) &&
+            replies.map((reply) => <Reply key={reply.id} thread={node} node={reply} />)}
 
-            {!resolved && !isInitial && <StartReply thread={node} />}
-          </Stack>
-        </Paper>
-      </AnchoredContainer>
-    </FocusScope>
+          {!resolved && !isInitial && focused && <StartReply thread={node} />}
+        </Stack>
+      </Paper>
+    </AnchoredContainer>
   );
 }

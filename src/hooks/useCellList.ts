@@ -1,4 +1,4 @@
-import React, { createContext, Key, useMemo, useState } from 'react';
+import React, { createContext, Key, useEffect, useLayoutEffect, useMemo, useState } from 'react';
 import { useListData } from 'react-stately';
 
 export type CellListItem = {
@@ -58,68 +58,91 @@ export const Context = createContext<CellListContext>({} as CellListContext)
 
 export function useCellList() {
   // React-stately will do the heavy lifting of list management
-  const { items, getItem, append, insertBefore, insert, remove, update, selectedKeys, setSelectedKeys } =
+  const { items, getItem, append, move, insert, remove, update, selectedKeys, setSelectedKeys } =
     useListData<CellListItem>({
       getKey: (item) => item.id
     });
 
-  /**
-   * Shift all items below (higher anchor) the initial cell down so that
-   * no items overlap the initial cell or each other.
-   *
-   * Assumes items are sorted already by their anchorCell, lowest-first
-   */
-  const reflowBelow = (initialIndex: number, lowestCell: number) => {
-    let prevBottom = lowestCell;
-
-    console.log('reflowBelow', initialIndex, lowestCell);
-    for (let i = initialIndex + 1; i < items.length; i++) {
-      const current = items[i];
-      if (current.cell < prevBottom) {
-        current.cell = prevBottom;
-        prevBottom = current.cell + current.height;
-        console.log('shift down', current.id);
-
-        update(current.id, { ...current });
-      } else {
-        // Nothing more to shift down
-
-        // TODO: if we reflow large items and eventually create
-        // a massive gap, we need a way to snap items back
-        // to their anchors if they get too far and we have
-        // enough room for it.
-        break;
-      }
+  // Packing algorithm that shifts EVERYTHING for tightest packing,
+  // making sure the item with the given id is locked to its anchor.
+  const pack = (id: React.Key) => {
+    if (items.length < 1) {
+      return;
     }
 
-  };
+    // FIRST THING: Sort based on anchors. We don't have a guaranteed sort.
+    const sorted = [...items].sort((a, b) => a.anchorCell - b.anchorCell);
+    const anchoredIndex = sorted.findIndex((c) => c.id === id);
 
-  const reflowAbove = (initialIndex: number, highestCell: number) => {
-    let prevTop = highestCell;
-
-    console.log('reflowAbove', initialIndex, highestCell);
-    for (let i = initialIndex - 1; i >= 0; i--) {
-      const current = items[i];
-
-      if (current.cell + current.height > prevTop) {
-        current.cell = prevTop - current.height;
-        prevTop = current.cell;
-        console.log('shift up', current.id);
-
-        update(current.id, { ...current });
-      } else {
-        // Nothing more to shift.
-
-        // TODO: See the reflowBelow issue
-        break;
-      }
+    if (anchoredIndex < 0) {
+      return;
     }
-  };
 
-  const getIndex = (id: Key) => items.findIndex((i) => i.id === id);
+    // Anything below (high cell) the anchored index needs to pack
+    // UPWARD toward the anchor.
+
+    const updated: number[] = [];
+
+    // Pack items above the anchoredIndex as tightly as allowed
+    // starting FROM the anchored index.
+    let max = sorted[anchoredIndex].anchorCell;
+    for (let i = anchoredIndex - 1; i >= 0; i--) {
+      const current = sorted[i];
+
+      // Shift down to maximum Y
+      max = Math.min(current.anchorCell + current.height, max);
+
+      if (current.cell !== max - current.height) {
+        // Move it and add to the batch
+        current.cell = max - current.height;
+        updated.push(i);
+      }
+
+      max = current.cell;
+    }
+
+    // Fix the item at anchoredIndex to its anchor.
+    if (sorted[anchoredIndex].cell !== sorted[anchoredIndex].anchorCell) {
+      sorted[anchoredIndex].cell = sorted[anchoredIndex].anchorCell;
+      updated.push(anchoredIndex);
+    }
+
+    // Pack items below it as tightly as allowed.
+    let min = sorted[anchoredIndex].anchorCell + sorted[anchoredIndex].height;
+
+    for (let i = anchoredIndex + 1; i < sorted.length; i++) {
+      const current = sorted[i];
+
+      // Shift up to minimum Y
+      min = Math.max(current.anchorCell, min);
+
+      if (current.cell !== min) {
+        // Move it and add to the batch
+        current.cell = min;
+        updated.push(i);
+      }
+
+      min = current.cell + current.height;
+    }
+
+    // Batch apply updated positions for anything that was moved.
+    updated.forEach((i) => update(sorted[i].id, sorted[i]));
+  }
 
   const selectedKey = (selectedKeys as Set<Key>).values().next().value;
   const focused = selectedKey ? getItem(selectedKey) : undefined;
+
+  // TODO(perf): This shouldn't run each time items change.
+  // If the dimensions/positions don't change then we don't need to pack.
+  // Should also just key this up and wait some tick before sorting again
+  // because we often run into situations where multiple items are resizing
+  // at the same time (or moving at the same time) and this gets called
+  // a duplicate number of times.
+  useLayoutEffect(() => {
+    if (items.length > 0) {
+      pack(focused ? focused.id : items[0].id);
+    }
+  }, [items, focused]);
 
   console.log('useCellList', items);
   return <UseCellListReturn>{
@@ -133,19 +156,8 @@ export function useCellList() {
         return;
       }
 
-      const index = getIndex(id);
-
       // Select and shift it back to its anchor
       setSelectedKeys(new Set([id]));
-      update(id, {
-        ...item,
-        cell: item.anchorCell
-      });
-
-      // Will need to shift everything around this item
-      // to make sure it aligns to its anchor correctly
-      reflowAbove(index, item.cell);
-      reflowBelow(index, item.cell + item.height);
     },
 
     resetFocus: () => {
@@ -154,23 +166,26 @@ export function useCellList() {
 
     addItem: (item) => {
       if (getItem(item.id)) {
-        throw new Error('CellListItem already exists with that ID');
+        throw new Error('CellListItem already exists with ID: ' + item.id);
       }
 
-      // Find an insertion point based on anchor cell
-      // and reflow all items below that point
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].anchorCell >= item.anchorCell) {
-          // Make room for the new insertion
-          reflowAbove(i, item.anchorCell);
-          reflowBelow(i - 1, item.anchorCell + item.height);
+      // // Find an insertion point based on anchor cell
+      // // and reflow all items below that point
+      // for (let i = 0; i < items.length; i++) {
+      //   if (items[i].anchorCell >= item.anchorCell) {
+      //     // Make room for the new insertion
+      //     // reflowAbove(i, item.anchorCell);
+      //     // reflowBelow(i - 1, item.anchorCell + item.height);
 
-          insert(i, item);
-          return;
-        }
-      }
+      //     insert(i, item);
+
+      //     // pack(0);
+      //     return;
+      //   }
+      // }
 
       append(item);
+      // pack(item.id);
     },
 
     removeItem: (id) => {
@@ -178,19 +193,50 @@ export function useCellList() {
     },
 
     updateItem: (id, item) => {
-      const existing = getItem(id);
-      const index = getIndex(id);
+      update(id, item);
+
+      // const existing = getItem(id);
+      // const index = getIndex(id);
+
+      // Anchor has moved, which requires the item to
+      // be re-inserted somewhere else in the array
+      // if (item.anchorCell !== existing.anchorCell) {
+
+
+      //   // Find an insertion point based on anchor cell
+      //   // and reflow all items below that point
+      //   for (let i = 0; i < items.length; i++) {
+      //     if (items[i].anchorCell >= item.anchorCell && items[i].id !== item.id) {
+      //       // Make room for the new insertion
+      //       // reflowAbove(i, item.anchorCell);
+      //       // reflowBelow(i - 1, item.anchorCell + item.height);
+
+      //       if (item.anchorCell === 1677) {
+      //         alert('at ' + i)
+      //       }
+
+      //       move(id, i);
+      //       return;
+      //     }
+      //   }
+
+      //   // If it's at the very end, move it as such.
+      //   if (item.anchorCell > items[items.length - 1].anchorCell) {
+      //     move(id, items.length);
+      //   }
+      // }
 
       // If the item has been forcibly moved
       // or resized - reflow nearby items
-      if (item.cell !== existing.cell) {
-        reflowAbove(index, item.cell);
-        reflowBelow(index, item.cell + item.height);
-      } else if (item.height !== existing.height) {
-        reflowBelow(index, item.cell + item.height);
-      }
+      // if (item.cell !== existing.cell) {
+      //   reflowAbove(index, item.cell);
+      //   reflowBelow(index, item.cell + item.height);
+      // } else if (item.height !== existing.height) {
+      //   reflowBelow(index, item.cell + item.height);
+      // }
 
-      update(id, item);
+
+      // pack(id);
     }
   };
 }
