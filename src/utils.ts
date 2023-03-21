@@ -27,14 +27,14 @@ export function getDocumentPosition(el: Element): { top: number; left: number } 
   const scrollLeft = win.scrollX || doc.documentElement.scrollLeft;
   const scrollTop = win.scrollY || doc.documentElement.scrollTop;
 
-  // If the element is in an iframe, we need to recurse upward.
-  if (win.frameElement) {
-    const framePosition = getDocumentPosition(win.frameElement);
-    return {
-      top: Math.round(framePosition.top + rect.top + scrollTop),
-      left: Math.round(framePosition.left + rect.left + scrollLeft)
-    };
-  }
+  // // If the element is in an iframe, we need to recurse upward.
+  // if (win.frameElement) {
+  //   const framePosition = getDocumentPosition(win.frameElement);
+  //   return {
+  //     top: Math.round(framePosition.top + rect.top + scrollTop),
+  //     left: Math.round(framePosition.left + rect.left + scrollLeft)
+  //   };
+  // }
 
   return {
     top: Math.round(rect.top + scrollTop),

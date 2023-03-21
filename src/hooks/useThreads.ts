@@ -16,6 +16,11 @@ export type UseThreadsReturn = {
   focus: (thread: Annotation) => void;
 
   /**
+   * Focus the next thread associated with this source
+   */
+  focusNext: () => void;
+
+  /**
    * Add a new annotation thread to this source and focus it
    */
   create: (motivation: AnnotationMotivation, selector?: AnnotationSelector) => Annotation;
@@ -57,6 +62,25 @@ export function useThreads(source: string, includeResolved = false): UseThreadsR
     threads,
     isFocused,
     create: (motivation, selector) => createThread(source, motivation, selector),
-    focus: (thread) => focus(thread.id)
+    focus: (thread) => focus(thread.id),
+    focusNext: () => {
+      if (threads.length < 1) {
+        return;
+      }
+
+      // Focus next thread in the list.
+      // TODO: Is this sorted in some way? Don't think so.
+      if (!isFocused || focused) {
+        for (let i = 0; i < threads.length; i++) {
+          if (threads[i].id === focused?.id && i < threads.length - 1) {
+            focus(threads[i + 1].id);
+            return;
+          }
+        }
+      }
+
+      // Otherwise, cycle back to focus the first thread.
+      focus(threads[0].id);
+    }
   };
 }

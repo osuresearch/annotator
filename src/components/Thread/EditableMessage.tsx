@@ -16,7 +16,7 @@ export type EditableMessageProps = {
   onCancel: () => void;
 };
 
-const EditorWrapper = styled.div`
+const EditorStyles = styled.div`
 
   .ProseMirror {
     border: 1px solid var(--rui-light);
@@ -103,17 +103,18 @@ export function EditableMessage({
     }
 
     setActiveEditor(true);
+
+    return () => setActiveEditor(false);
   }, [editor]);
 
   return (
-    // <FocusScope contain restoreFocus autoFocus>
     <Stack align="stretch" fs="sm">
-      <EditorWrapper>
+      <EditorStyles>
         <EditorContent
           editor={editor}
           onKeyDown={getHotkeyHandler([['mod+Enter', handleSave]])}
         />
-      </EditorWrapper>
+      </EditorStyles>
 
       <Group justify="end" align="center">
         <Text fs="xs" c="dark">Tip: Press Ctrl+Enter to save.</Text>
@@ -121,6 +122,5 @@ export function EditableMessage({
         <Button onPress={handleSave}>Save</Button>
       </Group>
     </Stack>
-    // </FocusScope>
   );
 }

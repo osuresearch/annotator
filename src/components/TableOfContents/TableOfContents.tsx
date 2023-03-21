@@ -32,7 +32,7 @@ function SectionList({ anchors }: SectionListProps) {
               }}
               onPress={(e) => onClickSection(props.el)}
             >
-              {props.title}
+              {props.title.substring(0, 50)}
             </Button>
           </li>
         ))}
@@ -74,6 +74,8 @@ export function TableOfContents({ document }: TableOfContentsProps) {
       // for use with the table of contents buttons.
       el.tabIndex = -1;
     });
+
+    console.log('sections', anchorProps);
 
     setAnchors(anchorProps);
   }, [document]);

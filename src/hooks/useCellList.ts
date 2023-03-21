@@ -125,6 +125,8 @@ export function useCellList() {
       min = current.cell + current.height;
     }
 
+    console.log('pack', updated.length);
+
     // Batch apply updated positions for anything that was moved.
     updated.forEach((i) => update(sorted[i].id, sorted[i]));
   }
@@ -138,6 +140,10 @@ export function useCellList() {
   // because we often run into situations where multiple items are resizing
   // at the same time (or moving at the same time) and this gets called
   // a duplicate number of times.
+
+  // Given 3 notes on one field, clicking the NoteAnchor
+  // yields 4 pack executions with 3, 0, 2, 0 updated items.
+  // useCellList is executed 6x times during that click.
   useLayoutEffect(() => {
     if (items.length > 0) {
       pack(focused ? focused.id : items[0].id);

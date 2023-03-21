@@ -1,11 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
-import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import styled from 'styled-components';
-import { useThreads } from '../../hooks/useThreads';
-import { useAnnotationFocus } from '../../hooks/useAnnotationFocus';
 import { getHotkeyHandler } from '@mantine/hooks';
 import { useFrame } from 'react-frame-component';
+
+import { useThreads } from '../../hooks/useThreads';
+import { useAnnotationFocus } from '../../hooks/useAnnotationFocus';
+import { useElementPosition } from '../../hooks/useElementPosition';
+import { useAnchorsContext } from '../../hooks/useAnchorsContext';
 
 // This is living as a styled component but will probably
 // be migrated to static CSS later in ExternalDocument.tsx.
@@ -47,10 +49,12 @@ const NotesButton = styled.button`
 `;
 
 function NoteAnchorImpl({ source, el }: { source: string; el: HTMLElement }) {
-  const { threads, isFocused, create, focus } = useThreads(source);
+  const { threads, isFocused, create, focusNext } = useThreads(source);
 
   // Update the annotation actions widget when we focus this field
   useAnnotationFocus(source, 'note', el);
+
+  // Except there's no concept of anchors here. Fuck I need a new name for that.
 
   // Add hotkey support for the anchor
   useEffect(() => {
@@ -74,9 +78,9 @@ function NoteAnchorImpl({ source, el }: { source: string; el: HTMLElement }) {
     return () => el.removeEventListener('keydown', handler);
   }, [el, create]);
 
-  // Focus the first thread associated with this anchor
-  const focusThreads = () => {
-    if (threads.length > 0) focus(threads[0]);
+  const focusThreads = (e: SyntheticEvent<HTMLButtonElement>) => {
+    focusNext();
+    e.preventDefault();
   };
 
   return createPortal(
@@ -92,17 +96,32 @@ function NoteAnchorImpl({ source, el }: { source: string; el: HTMLElement }) {
   );
 }
 
-export function NoteAnchor({ source }: Anchor) {
+export function NoteAnchor(anchor: Anchor) {
   const { document } = useFrame();
   const [target, setTarget] = useState<HTMLElement>();
+  const { addAnchors } = useAnchorsContext();
+
+  const position = useElementPosition(target);
 
   useEffect(() => {
-    setTarget(document?.getElementById(source) ?? undefined);
-  }, [source, document]);
+    console.log('update position', anchor, position);
+    addAnchors([
+      {
+        ...anchor,
+        target: position,
+      }
+    ]);
+  }, [anchor, position]);
+
+  // TODO: Remove anchors on unmount.
+
+  useEffect(() => {
+    setTarget(document?.getElementById(anchor.source) ?? undefined);
+  }, [anchor.source, document]);
 
   if (!target) {
     return null;
   }
 
-  return <NoteAnchorImpl source={source} el={target} />;
+  return <NoteAnchorImpl source={anchor.source} el={target} />;
 }

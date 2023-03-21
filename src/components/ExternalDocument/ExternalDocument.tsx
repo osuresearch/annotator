@@ -22,6 +22,11 @@ const STYLES = `
     background-color: gold;
     text-decoration: underline;
   }
+
+  [data-comment-block]:hover {
+    cursor: pointer;
+    background-color: lightyellow;
+  }
 `;
 
 export type ExternalDocumentProps = {
@@ -113,9 +118,9 @@ export function ExternalDocument(props: ExternalDocumentProps) {
 
   return (
     <Context.Provider value={ctx}>
-      <Group bgc="light" justify="center" miw="calc(21cm + 400px)" py="md">
+      <Group bgc="light" justify="center" miw="calc(21cm + 400px)" py="md" align="stretch" gap={0}>
         {document && <TableOfContents  document={document} />}
-        <Paper w="21cm" miw="21cm" p="xxl" withBorder shadow="md" ml="xxl">
+        <Paper w="21cm" miw="21cm" p="xxl" withBorder shadow="md">
           <Frame
             ref={frameRef}
             initialContent={props.content}
@@ -131,7 +136,7 @@ export function ExternalDocument(props: ExternalDocumentProps) {
 
           <ActionsSidebar />
         </Paper>
-        <Stack align="stretch" w={400} miw={400}>
+        <Stack align="stretch" w={400} miw={400} pt="xxl" className="threads">
           <ThreadList ref={listRef} />
         </Stack>
       </Group>

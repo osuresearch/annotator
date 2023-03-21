@@ -175,7 +175,7 @@ export function Thread({ node }: ThreadProps) {
           'rui-border-light': !focused,
           'rui-border-blue': focused,
         })}
-        w={400}
+        w={400 - 48}
       >
         <Stack align="stretch" gap="md" px="xs" pb="xs">
           {resolved && (

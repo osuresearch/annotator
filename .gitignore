@@ -8,3 +8,6 @@ docs-build/
 dist/
 coverage/
 .eslintcache
+
+# ORIS-only test case (S3 data)
+src/components/ExternalDocument/irb.ts
