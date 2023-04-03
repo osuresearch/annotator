@@ -9,7 +9,7 @@ import { useFrame } from 'react-frame-component';
 import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import { useTiptapAnnotations } from '../../hooks/useTiptapAnnotations';
 import { ActionsPopover } from '../ActionsPopover';
-import { isInViewport } from '../../utils';
+import { filterAnnotations, isInViewport } from '../../utils';
 import { useAnnotationPicker } from '../../hooks/useAnnotationPicker';
 
 import { Comment } from './comment';
@@ -72,10 +72,7 @@ export const AnnotatedTextField = forwardRef<HTMLDivElement, AnnotatedTextFieldP
 
   // Global context for the entire document for thread management
   const { annotations, focused, focus } = useAnnotationsContext();
-
-  // Filter down to only annotations we care about.
-  // TODO(perf): Scaling issue with too many annotations.
-  const trackedAnnotations = annotations.filter((t) => t.target.source === name);
+  const trackedAnnotations = filterAnnotations(annotations, name, true, true);
 
   const checkForUpdatedSelection = ({ editor }: { editor: Editor }) => {
     const { from, to, empty, $from, $head, $anchor } = editor.state.selection;
@@ -92,7 +89,7 @@ export const AnnotatedTextField = forwardRef<HTMLDivElement, AnnotatedTextFieldP
     if (!empty && to - from > 1) {
       const fromPos = editor.view.coordsAtPos(from);
       select({
-        source: name,
+        targetField: name,
         type: 'highlight',
         top: fromPos.top + (window?.scrollY ?? 0),
         start: from,
@@ -133,13 +130,15 @@ export const AnnotatedTextField = forwardRef<HTMLDivElement, AnnotatedTextFieldP
     editable: false
   });
 
+  // Is the currently focused annotation within the scope of this field
+  const hasFocusedAnnotation = focused?.target.selector?.type === 'FragmentSelector'
+    && focused.target.selector.value === name;
+
   useTiptapAnnotations(
     name,
     editor,
     trackedAnnotations,
-    focused?.target.source === name
-      ? focused
-      : undefined
+    hasFocusedAnnotation ? focused : undefined
   );
 
   return (

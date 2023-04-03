@@ -1,16 +1,9 @@
 import {
-  Avatar,
   Text,
   Stack,
   Group,
-  TextField,
-  TextAreaField,
-  Paper,
-  IconButton,
   Menu,
   Item,
-  Chip,
-  Icon,
   Link
 } from '@osuresearch/ui';
 import React, { useContext, useState } from 'react';

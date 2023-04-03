@@ -4,7 +4,14 @@ import { AnnotationSelection, Context as SelectionContext } from '../../hooks/us
 import { useEditors, Context as EditorsContext } from '../../hooks/useEditors';
 
 export type AnnotationsProviderProps = {
-  children: React.ReactNode;
+  /**
+   * Unique IRI of the document being annotated
+   */
+  documentId: string;
+
+  /**
+   * Initial annotation instances to display
+   */
   initialItems?: Annotation[];
 
   /**
@@ -22,18 +29,21 @@ export type AnnotationsProviderProps = {
    * versus a `Co-Investigator` on a study.
    */
   role: string;
+
+  children: React.ReactNode;
 };
 
 /**
  * Thin wrapper around the useAnnotations hook.
  */
 export function AnnotationsProvider({
+  documentId,
   children,
   initialItems,
   agent,
   role
 }: AnnotationsProviderProps) {
-  const ctx = useAnnotations(initialItems, agent, role);
+  const ctx = useAnnotations(documentId, initialItems, agent, role);
   const editors = useEditors();
 
   const [selected, select] = useState<AnnotationSelection>();

@@ -143,3 +143,55 @@ export function stripTags(html: string) {
  // SSR version. May not be consistent.
  return html.replace(/(<([^>]+)>)/gi, '').trim();
 }
+
+export function getTargetTextPosition(annotation: Annotation) {
+  const selector = annotation.target.selector;
+  if (selector?.type === 'TextPositionSelector') {
+    return {
+      from: selector.start,
+      to: selector.end,
+    }
+  }
+
+  if (selector?.type === 'FragmentSelector' && selector.refinedBy?.type === 'TextPositionSelector') {
+    return {
+      from: selector.refinedBy.start,
+      to: selector.refinedBy.end,
+    }
+  }
+
+  // It's a selector that doesn't specify a range.
+  // Let's just stick it at the beginning of the text.
+  return {
+    from: 0,
+    to: 0,
+  }
+}
+
+export function filterAnnotations(
+  annotations: Annotation[],
+  source: string,
+  includeDeleted: boolean,
+  includeResolved: boolean
+): Annotation[] {
+  return annotations.filter((t) => {
+    // Make sure the annotation is targeting the field.
+    const selector = t.target.selector;
+    if (selector?.type !== 'FragmentSelector' || selector.value !== source) {
+      return false;
+    }
+
+    const thread = t.body.find((b) => b.type === 'Thread') as AnnotationThreadBody | undefined;
+    const reply = t.body.find((b) => b.type === 'ThreadReply') as AnnotationReplyBody | undefined;
+
+    if (!includeDeleted && thread?.deleted || reply?.deleted) {
+      return false;
+    }
+
+    if (!includeResolved && thread?.resolved) {
+      return false;
+    }
+
+    return true;
+  });
+}

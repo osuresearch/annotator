@@ -48,11 +48,11 @@ const NotesButton = styled.button`
   }
 `;
 
-function NoteAnchorImpl({ source, el }: { source: string; el: HTMLElement }) {
-  const { threads, isFocused, create, focusNext } = useThreads(source);
+function NoteAnchorImpl({ anchor, el }: { anchor: Anchor; el: HTMLElement }) {
+  const { threads, isFocused, create, focusNext } = useThreads(anchor.source);
 
   // Update the annotation actions widget when we focus this field
-  useAnnotationFocus(source, 'note', el);
+  useAnnotationFocus(anchor.source, 'note', el);
 
   // Except there's no concept of anchors here. Fuck I need a new name for that.
 
@@ -63,10 +63,8 @@ function NoteAnchorImpl({ source, el }: { source: string; el: HTMLElement }) {
         'mod+alt+M',
         () => {
           create('commenting', {
-            type: 'RUIAnnoSelector',
-            subtype: 'note',
-            // TODO: Instance ID support
-            top: el.getBoundingClientRect().top
+            type: 'FragmentSelector',
+            value: '', // TODO: Copy value into here for context
           });
         }
       ]
@@ -123,5 +121,5 @@ export function NoteAnchor(anchor: Anchor) {
     return null;
   }
 
-  return <NoteAnchorImpl source={anchor.source} el={target} />;
+  return <NoteAnchorImpl anchor={anchor} el={target} />;
 }

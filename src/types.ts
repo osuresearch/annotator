@@ -5,10 +5,24 @@ type Rect = {
   height: number;
 };
 
+type AnchorType = 'highlight' | 'note' | 'tmp';
+
 type AnchorRef = {
+  /**
+   * Explicit Element ID to target with this anchor.
+   *
+   * Position of this element drives positioning of anchored elements.
+   */
   id?: string;
+
+  /**
+   * Field name we're referencing.
+   *
+   * This will be used for a `FragmentSelector.value` when
+   * creating new annotations on a field.
+   */
   source: string;
-  type?: RUIAnnoSubtype | 'tmp';
+  type?: AnchorType;
 };
 
 type NewAnchor = Omit<Anchor, 'id'> & {
@@ -17,7 +31,7 @@ type NewAnchor = Omit<Anchor, 'id'> & {
 
 type Anchor = {
   id: string;
-  type?: RUIAnnoSubtype | 'tmp';
+  type?: AnchorType;
   source: string;
 
   /**
@@ -29,7 +43,7 @@ type Anchor = {
 type AnnotationID = string;
 
 /** Supported annotation selector types */
-type AnnotationSelector = AdobeAnnoSelector | RUIAnnoSelector;
+type AnnotationSelector = AdobeAnnoSelector | FragmentSelector | TextPositionSelector;
 
 /** Supported annotation body types */
 type AnnotationBody = AnnotationTextualBody | AnnotationReplyBody | AnnotationThreadBody;
@@ -107,9 +121,10 @@ type Annotation = {
     /**
      * The IRI that identifies the target resource.
      *
-     * In the case of RUIAnnoSelectors, this is the field name.
+     * This is often a unique identifier for the document that
+     * we are currently annotating.
      */
-    source: string;
+    id: string;
 
     /**
      * Selector type to associate the annotation with its context.
@@ -252,45 +267,74 @@ type AnnotationAgent = {
  * W3C target selector for a text range
  *
  * https://www.w3.org/TR/annotation-model/#text-position-selector
+ *
+ * For more information, see:
  */
 type TextPositionSelector = {
-  // UNUSED: May be extended by RUIAnnoSelector
   type: 'TextPositionSelector';
+
+  /**
+   * The starting position of the segment of text. The first character in the
+   * full text is character position 0, and the character is included within
+   * the segment.
+   */
   start: number;
+
+  /**
+   * The end position of the segment of text. The character is not included
+   * within the segment.
+   */
   end: number;
 };
 
 type RUIAnnoSubtype = 'highlight' | 'note';
 
 /**
- * Target selector for our annotations
+ * W3C target selector for a document fragment
+ *
+ * Examples of HTML, PDF, and Media resources selectors:
+ * ```
+ * {  type: 'FragmentSelector',
+ *    conformsTo: 'http://tools.ietf.org/rfc/rfc3236',
+ *    value: 'namedSection'
+ * },
+ * {  type: 'FragmentSelector',
+ *    conformsTo: 'http://tools.ietf.org/rfc/rfc3778',
+ *    value: 'page=10&viewrect=50,50,640,480'
+ * },
+ * {  type: 'FragmentSelector',
+ *    conformsTo: 'http://www.w3.org/TR/media-frags/',
+ *    value: 'xywh=50,50,640,480'
+ * }
+* ```
+ *
+ * For more information, see:
+ * https://www.w3.org/TR/annotation-model/#text-position-selector
  */
-type RUIAnnoSelector = {
-  type: 'RUIAnnoSelector';
-
-  subtype: RUIAnnoSubtype;
+type FragmentSelector = {
+  type: 'FragmentSelector';
 
   /**
-   * Collection instance, if applicable
+   * The contents of the fragment component of an IRI that
+   * describes the Segment.
    */
-  instance?: string;
+  value: string;
 
   /**
-   * Document-relative top position of the target field.
-   * This helps us sort annotations in the UI.
+   * The relationship between the FragmentSelector and the specification
+   * that defines the syntax of the IRI fragment in the value property.
    */
-  top: number;
+  conformsTo?: string;
 
   /**
-   * Starting cursor of the text selection
+   * The relationship between a broader selector and a more specific selector.
+   *
+   * For annotating forms, the fragment selector often points to the
+   * field we're annotating and the refinement is an optional `TextPositionSelector`
+   * to indicate the text range to highlight within that field.
    */
-  start?: number;
-
-  /**
-   * Ending cursor of the text selection
-   */
-  end?: number;
-};
+  refinedBy?: AnnotationSelector;
+}
 
 /**
  * Target selector for Adobe DC View annotations.

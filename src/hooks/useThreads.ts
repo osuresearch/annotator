@@ -27,9 +27,9 @@ export type UseThreadsReturn = {
 };
 
 /**
- * Interact with all threads associated with the given source.
+ * Interact with all threads associated with the given document and source.
  *
- * @param source            Source name to use when locating associated threads
+ * @param source            Source name within the document to use when locating associated threads
  * @param includeResolved   Should threads that are resolved also be included in the
  *                          returned list of tracked threads
  */
@@ -40,10 +40,13 @@ export function useThreads(source: string, includeResolved = false): UseThreadsR
 
   useEffect(() => {
     const visible = annotations.filter((t) => {
-      if (t.target.source !== source) {
+      // Make sure the annotation is targeting this source field.
+      const selector = t.target.selector;
+      if (selector?.type !== 'FragmentSelector' || selector.value !== source) {
         return false;
       }
 
+      // Make sure the thread hasn't been deleted or resolved
       const { deleted, resolved } = t.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
 
       return !deleted && (!resolved || includeResolved);
@@ -61,7 +64,7 @@ export function useThreads(source: string, includeResolved = false): UseThreadsR
   return {
     threads,
     isFocused,
-    create: (motivation, selector) => createThread(source, motivation, selector),
+    create: (motivation, selector) => createThread(motivation, selector),
     focus: (thread) => focus(thread.id),
     focusNext: () => {
       if (threads.length < 1) {

@@ -11,14 +11,14 @@ export function useAnnotationFocus(source: string, type: 'note' | 'highlight', e
     const onFocus = (e: Event) => {
       const rect = (e.target as HTMLElement).getBoundingClientRect();
       select({
-        source,
+        targetField: source,
         type,
         top: rect.top + (window?.scrollY ?? 0)
       });
     };
 
     const onBlur = (e: Event) => {
-      if (selected?.source === source) {
+      if (selected?.targetField === source) {
         select(undefined);
       }
     };
@@ -44,6 +44,6 @@ export function useAnnotationFocus(source: string, type: 'note' | 'highlight', e
   }, [el, source, type, selected, select, window]);
 
   return {
-    isFocused: selected?.source === source
+    isFocused: selected?.targetField === source
   };
 }

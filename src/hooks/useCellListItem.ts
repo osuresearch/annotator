@@ -34,9 +34,11 @@ export function useCellListItem(id: React.Key, anchorCell: number) {
     });
   }
 
-  useEffect(() => {
-    return () => removeItem(id);
-  }, [id]);
+  // Remove the item on unmount of this component
+  useEffect(() =>
+    // noop
+    () => removeItem(id)
+  , [id]);
 
   return {
     item,

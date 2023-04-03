@@ -37,27 +37,19 @@ export function ActionsSidebar() {
       return;
     }
 
-    // Now I need context for highlights.
-    // if (selected?.type === 'highlight') {
-    //   const thread = createThread(selected.source, 'commenting', {
-    //     type: 'RUIAnnoSelector',
-    //     subtype: 'highlight',
-    //     top: selected.top,
-    //     start: selected.start,
-    //     end: selected.end
-    //   });
-    // }
+    const thread = createThread('commenting', {
+      type: 'FragmentSelector',
+      value: active.targetField,
 
-    const thread = createThread(active.source, 'commenting', {
-      type: 'RUIAnnoSelector',
-      subtype: active.type,
-      // TODO: Instance ID support
-      top: active.top,
-      start: active.start,
-      end: active.end
+      // If we have a text range selected, use that as refinement.
+      refinedBy: (active.start && active.end)
+        ? {
+            type: 'TextPositionSelector',
+            start: active.start,
+            end: active.end
+        }
+        : undefined
     });
-
-    console.log(thread);
   };
 
   // TODO: All this useEffect stuff should be encapsulated elsewhere

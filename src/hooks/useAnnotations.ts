@@ -11,15 +11,15 @@ export type AnnotationsContext = {
   /**
    * Start a new annotation thread and focus it
    *
-   * @param source      Field or content we are annotating
-   * @param motivation  Why the annotation is being created
-   * @param selector    Target of the annotation
-   * @param id          Optional IRI of the annotation. If omitted, one will be generated.
+   * @param documentId    Document that we're annotating
+   * @param motivation    Why the annotation is being created
+   * @param selector      Target of the annotation
+   * @param annotationId  Optional IRI of the annotation.
+   *                      If omitted, one will be generated.
    *
-   * @returns the new Annotation
+   * @returns the new thread Annotation
    */
   createThread: (
-    source: string,
     motivation: AnnotationMotivation,
     selector?: AnnotationSelector,
     id?: AnnotationID
@@ -28,12 +28,18 @@ export type AnnotationsContext = {
   /**
    * Start a new reply annotation
    *
-   * @param source Annotation this is replying to
-   * @param id Optional IRI of the annotation. If omitted, one will be generated.
+   * @param threadAnnotationId  Annotation thread this is replying to
+   * @param message             Initial body of the reply
+   * @param replyAnnotationId   Optional IRI of the annotation.
+   *                            If omitted, one will be generated.
    *
-   * @returns the new Annotation
+   * @returns the new reply Annotation
    */
-  createReply: (source: AnnotationID, message: string, id?: AnnotationID) => Annotation;
+  createReply: (
+    threadAnnotationId: AnnotationID,
+    message: string,
+    replyAnnotationId?: AnnotationID
+  ) => Annotation;
 
   /**
    * Focus an annotation, if possible
@@ -65,7 +71,11 @@ export type AnnotationsContext = {
    */
   annotations: Annotation[];
 
+  /**
+   * Is the user in the middle of editing the content of an annotation
+   */
   isEditingComment: boolean
+
   setIsEditingComment: (value: boolean) => void;
 };
 
@@ -79,11 +89,13 @@ export type UseAnnotationsReturn = AnnotationsContext;
  * The context returned by this hook is used by a provider
  * to expose a shared state for a set of annotation components.
  *
+ * @param documentId    Unique identifier of the document being annotated
  * @param initialItems  Existing annotations to preload
  * @param agent         Individual (or system) to log new annotations under
  * @param role          Agent's role in relation to the annotated document.
  */
 export function useAnnotations(
+  documentId: string,
   initialItems: Annotation[] = [],
   agent: AnnotationAgent,
   role: string
@@ -111,19 +123,19 @@ export function useAnnotations(
         setSelectedKeys(new Set(id ? [id] : []));
       },
 
-      createThread(source, motivation, selector, id) {
+      createThread(motivation, selector, annotationId) {
         const now = new Date().toISOString();
 
         const anno: Annotation = {
           '@context': 'http://www.w3.org/ns/anno.jsonld',
           'type': 'Annotation',
-          'id': id ?? uuidv4(),
+          'id': annotationId ?? uuidv4(),
           motivation,
           'created': now,
           'modified': now,
           'creator': agent,
           'target': {
-            source,
+            id: documentId,
             selector
           },
           'body': [
@@ -150,19 +162,19 @@ export function useAnnotations(
         return anno;
       },
 
-      createReply(source, message, id) {
+      createReply(threadAnnotationId, message, replyAnnotationId) {
         const now = new Date().toISOString();
 
         const anno: Annotation = {
           '@context': 'http://www.w3.org/ns/anno.jsonld',
           'type': 'Annotation',
-          'id': id ?? uuidv4(),
+          'id': replyAnnotationId ?? uuidv4(),
           'motivation': 'replying',
           'created': now,
           'modified': now,
           'creator': agent,
           'target': {
-            source
+            id: threadAnnotationId,
           },
           'body': [
             {
@@ -209,5 +221,5 @@ export function useAnnotations(
         });
       }
     };
-  }, [items, isEditingComment, selectedKeys, agent, role]);
+  }, [items, documentId, isEditingComment, selectedKeys, agent, role]);
 }

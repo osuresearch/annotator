@@ -17,13 +17,15 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: 'field13',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        top: 0,
-        start: 48,
-        end: 74
+        type: 'FragmentSelector',
+        value: 'field13',
+        refinedBy: {
+          type: 'TextPositionSelector',
+          start: 48,
+          end: 74
+        }
       }
     },
     'body': [
@@ -58,7 +60,7 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: '9d26aaef-5c1c-4c46-88f0-60f69de6ed9e'
+      id: '9d26aaef-5c1c-4c46-88f0-60f69de6ed9e'
     },
     'body': [
       {
@@ -90,7 +92,7 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: '9d26aaef-5c1c-4c46-88f0-60f69de6ed9e'
+      id: '9d26aaef-5c1c-4c46-88f0-60f69de6ed9e'
     },
     'body': [
       {
@@ -122,13 +124,15 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: 'field1',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        top: 0,
-        start: 32,
-        end: 58
+        type: 'FragmentSelector',
+        value: 'field1',
+        refinedBy: {
+          type: 'TextPositionSelector',
+          start: 32,
+          end: 58
+        }
       }
     },
     'body': [
@@ -163,13 +167,15 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: 'field1',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        top: 0,
-        start: 244,
-        end: 271
+        type: 'FragmentSelector',
+        value: 'field1',
+        refinedBy: {
+          type: 'TextPositionSelector',
+          start: 244,
+          end: 271
+        }
       }
     },
     'body': [
@@ -204,11 +210,10 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: 'field6',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'note',
-        top: 0
+        type: 'FragmentSelector',
+        value: 'field6',
       }
     },
     'body': [
@@ -243,11 +248,10 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: 'field8',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'note',
-        top: 0
+        type: 'FragmentSelector',
+        value: 'field8',
       }
     },
     'body': [
@@ -282,11 +286,10 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: 'field12',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'note',
-        top: 0
+        type: 'FragmentSelector',
+        value: 'field12',
       }
     },
     'body': [
@@ -321,13 +324,15 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: 'field5',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        top: 0,
-        start: 49,
-        end: 166
+        type: 'FragmentSelector',
+        value: 'field5',
+        refinedBy: {
+          type: 'TextPositionSelector',
+          start: 49,
+          end: 166
+        }
       }
     },
     'body': [
@@ -363,7 +368,7 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: '7aab03d9-4005-4ca2-8830-4cdcccec54fa'
+      id: '7aab03d9-4005-4ca2-8830-4cdcccec54fa'
     },
     'body': [
       {
@@ -395,7 +400,7 @@ export const shortFormAnnotations: Annotation[] = [
       nickname: 'mcmanning.1'
     },
     'target': {
-      source: 'ca3c2575-44c1-4af5-8fd4-5cd46ffa5dcd'
+      id: 'ca3c2575-44c1-4af5-8fd4-5cd46ffa5dcd'
     },
     'body': [
       {
@@ -437,13 +442,15 @@ export const annotations: Annotation[] = [
       }
     ],
     'target': {
-      source: 'section-0',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        start: 451,
-        end: 462,
-        top: 1
+        type: 'FragmentSelector',
+        value: 'section-0',
+        refinedBy: {
+          type: 'TextPositionSelector',
+          start: 451,
+          end: 462
+        }
       }
     },
     'creator': {
@@ -479,13 +486,15 @@ export const annotations: Annotation[] = [
       }
     ],
     'target': {
-      source: 'section-0',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        start: 397,
-        end: 411,
-        top: 0
+        type: 'FragmentSelector',
+        value: 'section-0',
+        refinedBy: {
+          type: 'TextPositionSelector',
+          start: 397,
+          end: 411,
+        }
       }
     },
     'creator': {
@@ -521,13 +530,15 @@ export const annotations: Annotation[] = [
       }
     ],
     'target': {
-      source: 'section-0',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        start: 556,
-        end: 614,
-        top: 4
+        type: 'FragmentSelector',
+        value: 'section-0',
+        refinedBy: {
+          type: 'TextPositionSelector',
+          start: 556,
+          end: 614,
+        }
       }
     },
     'creator': {
@@ -562,13 +573,15 @@ export const annotations: Annotation[] = [
       }
     ],
     'target': {
-      source: 'section-95',
+      id: 'mock-document',
       selector: {
-        type: 'RUIAnnoSelector',
-        subtype: 'highlight',
-        start: 235,
-        end: 366,
-        top: 1000
+        type: 'FragmentSelector',
+        value: 'section-95',
+        refinedBy: {
+          type: 'TextPositionSelector',
+          start: 235,
+          end: 366,
+        }
       }
     },
     'creator': {

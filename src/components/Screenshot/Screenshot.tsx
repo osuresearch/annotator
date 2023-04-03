@@ -3,7 +3,7 @@ import html2canvas from 'html2canvas';
 import { Button, Heading, Text } from '@osuresearch/ui';
 
 export type ScreenshotProps = {
-
+  __noop?: string;
 }
 
 export function Screenshot({ }: ScreenshotProps) {
@@ -13,7 +13,7 @@ export function Screenshot({ }: ScreenshotProps) {
     const target = document.querySelector('body');
 
     if (ref.current) {
-      html2canvas(ref.current).then(canvas => {
+      html2canvas(ref.current).then((canvas) => {
         ref.current?.appendChild(canvas);
       });
     }

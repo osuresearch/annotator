@@ -1,7 +1,8 @@
-import React, { forwardRef, useEffect, useState } from 'react';
+import React, { forwardRef } from 'react';
 import { Thread } from '../Thread';
 import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import { useCellList, Context as CellListContext } from '../../hooks/useCellList';
+import { Button, Icon } from '@osuresearch/ui';
 
 export const ThreadList = forwardRef<HTMLDivElement>((props, ref) => {
   // Source of our annotation data
@@ -26,6 +27,14 @@ export const ThreadList = forwardRef<HTMLDivElement>((props, ref) => {
 
   return (
     <div ref={ref}>
+      <Button variant="subtle" onPress={() => console.log(annotations)} style={{
+        position: 'absolute',
+        top: 0,
+        right: 0,
+      }}>
+        <Icon name="code" /> Print annotations to console
+      </Button>
+
       <CellListContext.Provider value={cellList}>
         {filtered?.map((anno) => (
           <Thread key={anno.id} node={anno} />

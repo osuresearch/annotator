@@ -1,6 +1,6 @@
 import { Editor } from "@tiptap/react";
 import { useEffect, useLayoutEffect, useRef } from "react";
-import { getDocumentPosition } from "../utils";
+import { getDocumentPosition, getTargetTextPosition } from "../utils";
 import { useAnchorsContext } from "./useAnchorsContext";
 
 /**
@@ -38,10 +38,7 @@ export function useTiptapAnnotations(source: string, editor: Editor | null, anno
 
         if (!deleted && !resolved) {
           commands
-            .setTextSelection({
-              from: (t.target.selector as RUIAnnoSelector).start ?? 0,
-              to: (t.target.selector as RUIAnnoSelector).end ?? 0
-            })
+            .setTextSelection(getTargetTextPosition(t))
             .setComment(t.id);
         }
       });
@@ -52,10 +49,7 @@ export function useTiptapAnnotations(source: string, editor: Editor | null, anno
 
         if (!deleted) {
           commands
-            .setTextSelection({
-              from: (focused.target.selector as RUIAnnoSelector).start ?? 0,
-              to: (focused.target.selector as RUIAnnoSelector).end ?? 0
-            })
+            .setTextSelection(getTargetTextPosition(focused))
             .setCommentFocus(focused.id)
         }
       };

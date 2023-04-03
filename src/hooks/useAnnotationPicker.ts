@@ -1,9 +1,15 @@
 import { createContext, useContext } from 'react';
 
 export type AnnotationSelection = {
-  source: string;
-  type: RUIAnnoSubtype;
+  /**
+   * Field to be annotated within the document
+   */
+  targetField: string;
+
+  type: 'highlight' | 'note' | 'tmp';
+
   top: number;
+
   start?: number;
   end?: number;
 };

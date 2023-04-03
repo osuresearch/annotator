@@ -1,8 +1,6 @@
 import { createContext, useMemo } from 'react';
 import { useListData } from 'react-stately';
-import { getDocumentPosition } from '../utils';
 import { v4 as uuidv4 } from 'uuid';
-import { UseAnchorsContextReturn } from './useAnchorsContext';
 
 export type AnchorsContext = {
   /**

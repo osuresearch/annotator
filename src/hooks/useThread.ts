@@ -60,7 +60,7 @@ export function useThread(id: AnnotationID): UseThreadReturn {
 
     // TODO: This updates constantly whenever other annotations change.
     // How do we only update this when the individual replies change?
-    const replies = annotations.filter((a) => a.target.source === id);
+    const replies = annotations.filter((a) => a.target.id === id);
     setReplies(replies);
 
     console.log('useThread effect ', id);

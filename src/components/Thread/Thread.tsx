@@ -39,12 +39,26 @@ export function Thread({ node }: ThreadProps) {
   const body = node.body.find((b) => b.type === 'TextualBody') as AnnotationTextualBody;
   const state = node.body.find((b) => b.type === 'Thread') as AnnotationThreadBody;
 
+  // Threads use an anchor to either:
+  //  1. An Element ID if the annotation target is simply a fragment
+  //  2. An explicit annotation ID if the target is a fragment that is refined by a text position
+
   // Threads reference *either* an anchor that references
   // the same node ID (in the case of highlights) OR
   // anchors that reference the parent field (target.source)
+  if (node.target.selector?.type !== 'FragmentSelector') {
+    throw new Error(
+      'Unexpected target selector associated with thread annotation. Expected FragmentSelector'
+    );
+  }
+
+  const fragment = node.target.selector;
+
   const anchorRef: AnchorRef = {
-    id: node.target.selector?.subtype === 'highlight' ? node.id : undefined,
-    source: node.target.source,
+    id: fragment.refinedBy?.type === 'TextPositionSelector'
+      ? node.id
+      : undefined,
+    source: fragment.value,
   }
 
   const anchor = getAnchor(anchorRef);
