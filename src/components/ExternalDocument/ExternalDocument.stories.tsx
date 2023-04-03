@@ -187,7 +187,7 @@ const demoAgent: AnnotationAgent = {
 
 export const Simple: Story = {
   render: (args) => (
-    <AnnotationsProvider initialItems={shortFormAnnotations} agent={demoAgent} role="Reviewer">
+    <AnnotationsProvider documentId="mock-document" initialItems={shortFormAnnotations} agent={demoAgent} role="Reviewer">
       <ExternalDocument content={args.content} />
     </AnnotationsProvider>
   ),
@@ -200,7 +200,7 @@ export const Simple: Story = {
 // is embedded into more complicated DOM.
 export const AlignmentTest: Story = {
   render: (args) => (
-    <AnnotationsProvider initialItems={shortFormAnnotations} agent={demoAgent} role="Reviewer">
+    <AnnotationsProvider documentId="mock-document" initialItems={shortFormAnnotations} agent={demoAgent} role="Reviewer">
       <Stack align="stretch">
         <Heading level={1}>Heading 1</Heading>
         <Paper bgc="aqua" c="aqua-contrast" p="sm">Some heading content</Paper>
@@ -251,7 +251,7 @@ export const StressTest: Story = {
     );
 
     return (
-      <AnnotationsProvider initialItems={annotations} agent={demoAgent} role="Reviewer">
+      <AnnotationsProvider documentId="mock-document" initialItems={annotations} agent={demoAgent} role="Reviewer">
         <ExternalDocument
           {...args}
           content={`
@@ -287,32 +287,32 @@ export const StressTest: Story = {
   }
 };
 
-export const IRBTest: Story = {
-  render: (args) => {
-    const [html, setHtml] = useState('<html><body><div><p>Loading...</p></div></body></html>');
+// export const IRBTest: Story = {
+//   render: (args) => {
+//     const [html, setHtml] = useState('<html><body><div><p>Loading...</p></div></body></html>');
 
-    import('./irb').then((irb) => {
-      setHtml(irb.default);
-    }).catch(() => {
-      setHtml('<html><body><div><p>IRB test document cannot be dynamically loaded.</p></div></body></html>');
-    });
+//     import('./irb').then((irb) => {
+//       setHtml(irb.default);
+//     }).catch(() => {
+//       setHtml('<html><body><div><p>IRB test document cannot be dynamically loaded.</p></div></body></html>');
+//     });
 
-    return (
-      <AnnotationsProvider initialItems={[]} agent={demoAgent} role="Reviewer">
-        <Stack align="stretch">
-          <Heading level={1}>Heading 1</Heading>
-          <Paper bgc="aqua" c="aqua-contrast" p="sm">Some heading content</Paper>
-        </Stack>
-        <Group>
-          <Paper bgc="blue" c="blue-contrast" miw={400} h={500} p="sm">
-            Some aside content
-          </Paper>
-          <ExternalDocument content={html} />
-        </Group>
-      </AnnotationsProvider>
-    )
-  },
-  args: {
+//     return (
+//       <AnnotationsProvider initialItems={[]} agent={demoAgent} role="Reviewer">
+//         <Stack align="stretch">
+//           <Heading level={1}>Heading 1</Heading>
+//           <Paper bgc="aqua" c="aqua-contrast" p="sm">Some heading content</Paper>
+//         </Stack>
+//         <Group>
+//           <Paper bgc="blue" c="blue-contrast" miw={400} h={500} p="sm">
+//             Some aside content
+//           </Paper>
+//           <ExternalDocument content={html} />
+//         </Group>
+//       </AnnotationsProvider>
+//     )
+//   },
+//   args: {
 
-  }
-}
+//   }
+// }
