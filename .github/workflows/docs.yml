@@ -1,15 +1,11 @@
-name: Release
+name: Development
 on:
   push:
     branches:
-      - main
-      - next
-      - alpha
-      - beta
-      - "*.x"
+      - dev
 jobs:
-  release:
-    name: Release
+  docs:
+    name: Build Docs
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,17 +16,15 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v2
         with:
-          cache: npm
+          cache: yarn
           node-version: 18
+          cache-dependency-path: yarn.lock
 
       - name: Install dependencies
-        run: npm ci
-
-      - name: Build Release
-        run: npm run build
+        run: yarn install
 
       - name: Build Storybook
-        run: npm run build:storybook
+        run: yarn build:storybook
 
       - name: Deploy GitHub Pages
         uses: JamesIves/github-pages-deploy-action@3.6.2
@@ -39,9 +33,3 @@ jobs:
           BRANCH: gh-pages
           FOLDER: docs-build
           CLEAN: true
-
-      - name: Release
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npx semantic-release@19
