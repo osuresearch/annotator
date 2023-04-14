@@ -14,6 +14,7 @@ import { useAnnotationPicker } from '../../hooks/useAnnotationPicker';
 
 import { Comment } from './comment';
 import { CommentFocus } from './comment-focus';
+import { AnnotationID, Rect } from '../../types';
 
 type ActiveMark = Rect & {
   id: string;

@@ -3,6 +3,8 @@ import { useElementSize } from "../../hooks/useElementSize";
 import { Context as CellListContext } from '../../hooks/useCellList';
 import styled from "styled-components";
 import { useCellListItem } from "../../hooks/useCellListItem";
+import { IconButton } from "@osuresearch/ui";
+import { Anchor } from '../../types';
 
 export type AnchoredContainerProps = {
   id: string
@@ -49,6 +51,12 @@ export function AnchoredContainer({ id, anchor, focused, gap, children }: Anchor
   }, [item, id, anchorPos, heightWithGap, focused]);
 
   return (
+    <>
+    <IconButton size={20} label="Icon here" name="comment" style={{
+      position: 'absolute',
+      transform: `translateY(${item?.anchorCell ?? 0}px) translateX(-48px)`
+    }} />
+
     <AnimatedContainer ref={ref} style={{
       position: 'absolute',
       transform: item?.cell
@@ -57,5 +65,6 @@ export function AnchoredContainer({ id, anchor, focused, gap, children }: Anchor
     }}>
       {children}
     </AnimatedContainer>
+    </>
   );
 }

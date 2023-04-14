@@ -1,7 +1,9 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useAnnotations, Context } from '../../hooks/useAnnotations';
 import { AnnotationSelection, Context as SelectionContext } from '../../hooks/useAnnotationPicker';
 import { useEditors, Context as EditorsContext } from '../../hooks/useEditors';
+import { loadAllIcons } from '../../icons';
+import { Annotation, AnnotationAgent } from '../../types';
 
 export type AnnotationsProviderProps = {
   /**
@@ -56,6 +58,10 @@ export function AnnotationsProvider({
     }),
     [selected]
   );
+
+  useEffect(() => {
+    loadAllIcons();
+  }, []);
 
   return (
     <Context.Provider value={ctx}>

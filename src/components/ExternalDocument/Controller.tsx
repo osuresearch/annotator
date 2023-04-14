@@ -7,6 +7,7 @@ import { NoteAnchor } from './NoteAnchor';
 
 import { useAnchorsContext } from '../../hooks/useAnchorsContext';
 import { getDocumentPosition } from '../../utils';
+import { NewAnchor } from '../../types';
 
 function _Controller() {
   const { document } = useFrame();

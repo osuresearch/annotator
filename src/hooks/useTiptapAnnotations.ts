@@ -1,5 +1,6 @@
 import { Editor } from "@tiptap/react";
 import { useEffect, useLayoutEffect, useRef } from "react";
+import { Annotation, AnnotationThreadBody, NewAnchor } from '../types';
 import { getDocumentPosition, getTargetTextPosition } from "../utils";
 import { useAnchorsContext } from "./useAnchorsContext";
 

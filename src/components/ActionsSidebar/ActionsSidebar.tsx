@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import { AnnotationSelection, useAnnotationPicker } from '../../hooks/useAnnotationPicker';
 import { useFocusWithin } from 'react-aria';
 import { IconButton, Tooltip } from '@osuresearch/ui';
+import { AnnotationMotivation } from '../../types';
 
 const Panel = styled.div`
   position: absolute;
@@ -83,7 +84,7 @@ export function ActionsSidebar() {
     >
       <Tooltip contentSlot="Ask a question">
         <IconButton
-          name="question"
+          name="questioningComment"
           label="Ask a question"
           size={24}
           onPress={() => startThread('questioning')}
@@ -92,7 +93,7 @@ export function ActionsSidebar() {
 
       <Tooltip contentSlot="Add a comment">
         <IconButton
-          name={active?.type === 'note' ? "image" : 'edit'}
+          name="addComment"
           label="Add a comment"
           size={24}
           onPress={() => startThread('commenting')}
@@ -100,7 +101,7 @@ export function ActionsSidebar() {
       </Tooltip>
 
       <Tooltip contentSlot="Make a suggestion">
-        <IconButton name="edit" label="Make a suggestion" size={24} />
+        <IconButton name="suggestionComment" label="Make a suggestion" size={24} />
       </Tooltip>
       {/* <Button>
         💬 {isFocusWithin ? 'focus' : 'nope'}

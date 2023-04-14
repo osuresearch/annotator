@@ -84,7 +84,11 @@ export function TableOfContents({ document }: TableOfContentsProps) {
 
   return (
     <Stack>
-      <IconButton label="Toggle table of contents" variant="fade" name="bars"
+      <IconButton
+        size={24}
+        label="Toggle table of contents"
+        variant="fade"
+        name="tableOfContents"
         onPress={() => setOpen(!open)}
       />
 

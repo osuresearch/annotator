@@ -1,4 +1,5 @@
 import { useMemo, useState, useRef, useEffect } from 'react';
+import { Rect } from '../types';
 
 /**
  * @author mantine.dev

@@ -1,3 +1,5 @@
+import { Annotation, AnnotationReplyBody, AnnotationThreadBody, Rect } from "./types";
+
 export function isInViewport(window: Window, rect: Rect) {
   if (!window || !document) {
     return false;

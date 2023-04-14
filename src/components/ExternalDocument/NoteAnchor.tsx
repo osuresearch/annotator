@@ -8,6 +8,7 @@ import { useThreads } from '../../hooks/useThreads';
 import { useAnnotationFocus } from '../../hooks/useAnnotationFocus';
 import { useElementPosition } from '../../hooks/useElementPosition';
 import { useAnchorsContext } from '../../hooks/useAnchorsContext';
+import { Anchor } from '../../types';
 
 // This is living as a styled component but will probably
 // be migrated to static CSS later in ExternalDocument.tsx.

@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { Annotation, AnnotationID } from '../types';
 import { useAnnotationsContext } from './useAnnotationsContext';
 
 export type UseThreadReturn = {

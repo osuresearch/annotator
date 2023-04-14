@@ -1,6 +1,7 @@
 import React from 'react';
 import { Group, Avatar, Chip, Text, Stack } from '@osuresearch/ui';
 import dayjs from 'dayjs'
+import { Annotation } from '../../types';
 
 export type ProfileProps = {
   node: Annotation;

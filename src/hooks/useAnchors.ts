@@ -1,5 +1,6 @@
 import { createContext, useMemo } from 'react';
 import { useListData } from 'react-stately';
+import { Anchor, AnchorRef, NewAnchor } from '../types';
 import { v4 as uuidv4 } from 'uuid';
 
 export type AnchorsContext = {

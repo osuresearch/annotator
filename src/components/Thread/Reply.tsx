@@ -12,6 +12,7 @@ import { EditableMessage } from './EditableMessage';
 import { Profile } from './Profile';
 import { ReadOnlyMessage } from './ReadOnlyMessage';
 import { Context as EditorsContext } from '../../hooks/useEditors';
+import { Annotation, AnnotationTextualBody, AnnotationReplyBody, AnnotationThreadBody } from '../../types';
 
 export type ReplyProps = {
   thread: Annotation;

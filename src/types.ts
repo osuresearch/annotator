@@ -1,13 +1,13 @@
-type Rect = {
+export type Rect = {
   x: number;
   y: number;
   width: number;
   height: number;
 };
 
-type AnchorType = 'highlight' | 'note' | 'tmp';
+export type AnchorType = 'highlight' | 'note' | 'tmp';
 
-type AnchorRef = {
+export type AnchorRef = {
   /**
    * Explicit Element ID to target with this anchor.
    *
@@ -25,11 +25,11 @@ type AnchorRef = {
   type?: AnchorType;
 };
 
-type NewAnchor = Omit<Anchor, 'id'> & {
+export type NewAnchor = Omit<Anchor, 'id'> & {
   id?: string;
 };
 
-type Anchor = {
+export type Anchor = {
   id: string;
   type?: AnchorType;
   source: string;
@@ -40,16 +40,16 @@ type Anchor = {
   target: Rect
 };
 
-type AnnotationID = string;
+export type AnnotationID = string;
 
 /** Supported annotation selector types */
-type AnnotationSelector = AdobeAnnoSelector | FragmentSelector | TextPositionSelector;
+export type AnnotationSelector = AdobeAnnoSelector | FragmentSelector | TextPositionSelector;
 
 /** Supported annotation body types */
-type AnnotationBody = AnnotationTextualBody | AnnotationReplyBody | AnnotationThreadBody;
+export type AnnotationBody = AnnotationTextualBody | AnnotationReplyBody | AnnotationThreadBody;
 
 /** Supported annotation motivations */
-type AnnotationMotivation = 'commenting' | 'questioning' | 'replying';
+export type AnnotationMotivation = 'commenting' | 'questioning' | 'replying';
 
 /**
  * W3C annotation data structure.
@@ -58,7 +58,7 @@ type AnnotationMotivation = 'commenting' | 'questioning' | 'replying';
  *
  * See: https://www.w3.org/TR/annotation-model/
  */
-type Annotation = {
+export type Annotation = {
   /**
    * The Annotation MUST have 1 or more @context values and
    * http://www.w3.org/ns/anno.jsonld MUST be one of them.
@@ -79,7 +79,7 @@ type Annotation = {
   /**
    * The reason why the Annotation was created.
    *
-   * Details for each type of motivation are available at
+   * Details for each export type of motivation are available at
    * https://www.w3.org/TR/annotation-model/#motivation-and-purpose
    */
   'motivation': AnnotationMotivation;
@@ -127,7 +127,7 @@ type Annotation = {
     id: string;
 
     /**
-     * Selector type to associate the annotation with its context.
+     * Selector export type to associate the annotation with its context.
      *
      * Supports both our own and Adobe formats.
      *
@@ -148,7 +148,7 @@ type Annotation = {
 /**
  * W3C textual body model of an annotation
  */
-type AnnotationTextualBody = {
+export type AnnotationTextualBody = {
   /** Annotation body class */
   type: 'TextualBody';
 
@@ -169,7 +169,7 @@ type AnnotationTextualBody = {
 /**
  * Annotation body metadata for a thread.
  */
-type AnnotationThreadBody = {
+export type AnnotationThreadBody = {
   /** Annotation body class */
   type: 'Thread';
 
@@ -207,7 +207,7 @@ type AnnotationThreadBody = {
 /**
  * Annotation body metadata for a reply to a thread.
  */
-type AnnotationReplyBody = {
+export type AnnotationReplyBody = {
   /** Annotation body class */
   type: 'ThreadReply';
 
@@ -237,11 +237,11 @@ type AnnotationReplyBody = {
  *
  * This may be either a human, an organization or a software agent.
  */
-type AnnotationAgent = {
+export type AnnotationAgent = {
   /**
-   * Type of agent.
+   * export type of agent.
    *
-   * Details for each type of agent are available at
+   * Details for each export type of agent are available at
    * https://www.w3.org/TR/annotation-model/#agents
    */
   type: 'Person' | 'Organization' | 'Software';
@@ -270,7 +270,7 @@ type AnnotationAgent = {
  *
  * For more information, see:
  */
-type TextPositionSelector = {
+export type TextPositionSelector = {
   type: 'TextPositionSelector';
 
   /**
@@ -286,8 +286,6 @@ type TextPositionSelector = {
    */
   end: number;
 };
-
-type RUIAnnoSubtype = 'highlight' | 'note';
 
 /**
  * W3C target selector for a document fragment
@@ -311,7 +309,7 @@ type RUIAnnoSubtype = 'highlight' | 'note';
  * For more information, see:
  * https://www.w3.org/TR/annotation-model/#text-position-selector
  */
-type FragmentSelector = {
+export type FragmentSelector = {
   type: 'FragmentSelector';
 
   /**
@@ -344,7 +342,7 @@ type FragmentSelector = {
  * For more information on Adobe's schema, see:
  * https://developer.adobe.com/document-services/docs/overview/pdf-embed-api/howtos_comments/#annotation-schema
  */
-type AdobeAnnoSelector = {
+export type AdobeAnnoSelector = {
   type: 'AdobeAnnoSelector';
 
   /**

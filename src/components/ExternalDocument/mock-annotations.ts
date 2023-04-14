@@ -1,3 +1,5 @@
+import { Annotation } from '../../types';
+
 export const shortFormAnnotations: Annotation[] = [
   // note these are out of order on purpose so that
   // we can test sorting annotation threads based on

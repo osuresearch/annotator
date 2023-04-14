@@ -1,6 +1,7 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useFrame } from 'react-frame-component';
+import { Anchor } from '../../types';
 import { AnnotatedTextField } from '../AnnotatedTextField';
 
 function _HighlightAnchor({ source }: Anchor) {

@@ -1,3 +1,5 @@
+import { Annotation } from '../../types';
+
 export type AnnotationEventHandler = (annotation: Annotation) => void;
 
 /**

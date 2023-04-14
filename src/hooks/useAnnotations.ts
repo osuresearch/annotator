@@ -1,6 +1,7 @@
 import { createContext, Key, useCallback, useEffect, useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useListData } from 'react-stately';
+import { Annotation, AnnotationMotivation, AnnotationSelector, AnnotationID, AnnotationBody, AnnotationAgent } from '../types';
 
 export type AnnotationInteractionState = {
   isEditingComment: boolean;

@@ -26,6 +26,7 @@ import { isInViewport } from '../../utils';
 import { Profile } from './Profile';
 import { AnchoredContainer } from '../AnchoredContainer';
 import { Context as EditorsContext } from '../../hooks/useEditors';
+import { Annotation, AnnotationTextualBody, AnnotationThreadBody, AnchorRef } from '../../types';
 
 export type ThreadProps = {
   node: Annotation;

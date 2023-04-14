@@ -36,6 +36,7 @@ export const ThreadList = forwardRef<HTMLDivElement>((props, ref) => {
       </Button>
 
       <CellListContext.Provider value={cellList}>
+        <AnchorButtons />
         {filtered?.map((anno) => (
           <Thread key={anno.id} node={anno} />
         ))}
@@ -44,3 +45,11 @@ export const ThreadList = forwardRef<HTMLDivElement>((props, ref) => {
     </div>
   );
 });
+
+function AnchorButtons() {
+  return (
+    <>
+
+    </>
+  )
+}
