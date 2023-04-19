@@ -9,6 +9,7 @@ dist/
 coverage/
 .eslintcache
 stats.html
+.yarn
 
 # ORIS-only test case (S3 data)
 src/components/ExternalDocument/irb.ts

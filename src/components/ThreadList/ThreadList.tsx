@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react';
+import { Button, Icon } from '@osuresearch/ui';
 import { Thread } from '../Thread';
 import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
-import { useCellList, Context as CellListContext } from '../../hooks/useCellList';
-import { Button, Icon } from '@osuresearch/ui';
+import { useCellList, CellListContext as CellListContext } from '../../hooks/useCellList';
 
 export const ThreadList = forwardRef<HTMLDivElement>((props, ref) => {
   // Source of our annotation data

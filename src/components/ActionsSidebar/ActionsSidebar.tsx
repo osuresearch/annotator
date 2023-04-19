@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import styled from 'styled-components';
 import { AnnotationSelection, useAnnotationPicker } from '../../hooks/useAnnotationPicker';
@@ -14,11 +14,6 @@ const Panel = styled.div`
   border: 2px solid var(--rui-light-shade);
   flex-direction: column;
   margin-right: 4px;
-`;
-
-const Button = styled.button`
-  background: none;
-  border: 0;
 `;
 
 export function ActionsSidebar() {

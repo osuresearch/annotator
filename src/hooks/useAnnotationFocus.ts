@@ -17,7 +17,7 @@ export function useAnnotationFocus(source: string, type: 'note' | 'highlight', e
       });
     };
 
-    const onBlur = (e: Event) => {
+    const onBlur = () => {
       if (selected?.targetField === source) {
         select(undefined);
       }

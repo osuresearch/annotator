@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { useAnnotations, Context } from '../../hooks/useAnnotations';
-import { AnnotationSelection, Context as SelectionContext } from '../../hooks/useAnnotationPicker';
-import { useEditors, Context as EditorsContext } from '../../hooks/useEditors';
+import { useAnnotations, AnnotationsContext } from '../../hooks/useAnnotations';
+import { AnnotationSelection, AnnotationPickerContext } from '../../hooks/useAnnotationPicker';
+import { useEditors, EditorsContext } from '../../hooks/useEditors';
 import { loadAllIcons } from '../../icons';
 import { Annotation, AnnotationAgent } from '../../types';
 
@@ -64,12 +64,12 @@ export function AnnotationsProvider({
   }, []);
 
   return (
-    <Context.Provider value={ctx}>
+    <AnnotationsContext.Provider value={ctx}>
       <EditorsContext.Provider value={editors}>
-        <SelectionContext.Provider value={selectionCtx}>
+        <AnnotationPickerContext.Provider value={selectionCtx}>
           {children}
-        </SelectionContext.Provider>
+        </AnnotationPickerContext.Provider>
       </EditorsContext.Provider>
-    </Context.Provider>
+    </AnnotationsContext.Provider>
   );
 }

@@ -1,7 +1,6 @@
-import React, { useLayoutEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Code, Group, Heading, Paper, Stack } from '@osuresearch/ui';
+import React, { useLayoutEffect, useRef } from 'react';
+import { Group, Paper, Stack } from '@osuresearch/ui';
 import Frame from 'react-frame-component';
-import styled from 'styled-components';
 
 import { Controller } from './Controller';
 import { TableOfContents } from '../TableOfContents/TableOfContents';
@@ -38,25 +37,25 @@ export type ExternalDocumentProps = {
   content: string;
 };
 
-const PageLayout = styled.div`
-  // A4 page size
-  /* min-width: 21cm; */
-  /* height: 29.7cm;
-  margin: 30mm 45mm 30mm 45mm; */
-  display: flex;
-  flex-direction: row;
+// const PageLayout = styled.div`
+//   // A4 page size
+//   /* min-width: 21cm; */
+//   /* height: 29.7cm;
+//   margin: 30mm 45mm 30mm 45mm; */
+//   display: flex;
+//   flex-direction: row;
 
-  border: 1px solid red;
-`;
+//   border: 1px solid red;
+// `;
 
-const A4Page = styled.div`
-  border: 1px solid green;
-  background: #fff;
+// const A4Page = styled.div`
+//   border: 1px solid green;
+//   background: #fff;
 
-  min-width: 21cm;
-  width: 21cm;
-  padding: 64px;
-`;
+//   min-width: 21cm;
+//   width: 21cm;
+//   padding: 64px;
+// `;
 
 /**
  * Container for a reviewable document that was generated through

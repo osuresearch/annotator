@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { Group, Stack, UnstyledButton } from '@osuresearch/ui';
 import styled from 'styled-components';
 import { useThread } from '../../hooks/useThread';
-import { Context as EditorsContext } from '../../hooks/useEditors';
+import { EditorsContext } from '../../hooks/useEditors';
 import { EditableMessage } from './EditableMessage';
 import { Annotation } from '../../types';
 

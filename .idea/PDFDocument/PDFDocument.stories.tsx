@@ -2,7 +2,7 @@ import React from 'react';
 import { Story, Meta } from '@storybook/react';
 
 import { PDFDocument, PDFDocumentProps } from './PDFDocument';
-import { AnnotationsProvider } from '../AnnotationsProvider';
+import { AnnotationsProvider } from '../../src/components/AnnotationsProvider';
 
 export default {
   title: 'Components/PDFDocument',

@@ -1,10 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Meta, StoryObj } from '@storybook/react';
+import { Group, Heading, Paper, Stack } from '@osuresearch/ui';
 
 import { ExternalDocument } from './ExternalDocument';
 import { AnnotationsProvider } from '../AnnotationsProvider';
 import { annotations, shortFormAnnotations } from './mock-annotations';
-import { Group, Heading, Paper, Stack, Text } from '@osuresearch/ui';
+import { AnnotationAgent } from '../../types';
 
 const meta: Meta<typeof ExternalDocument> = {
   title: 'Components/ExternalDocument',

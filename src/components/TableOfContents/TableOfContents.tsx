@@ -1,4 +1,4 @@
-import { Button, Icon, IconButton, Stack, ToggleButton } from '@osuresearch/ui';
+import { Button, IconButton, Stack } from '@osuresearch/ui';
 import React, { useEffect, useState } from 'react';
 
 type SectionAnchorProps = {
@@ -30,7 +30,7 @@ function SectionList({ anchors }: SectionListProps) {
               style={{
                 marginLeft: props.level * 16
               }}
-              onPress={(e) => onClickSection(props.el)}
+              onPress={() => onClickSection(props.el)}
             >
               {props.title.substring(0, 50)}
             </Button>

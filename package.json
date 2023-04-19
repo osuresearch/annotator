@@ -34,7 +34,7 @@
     "test:coverage": "jest --coverage",
     "prepare": "husky install",
     "lint": "eslint . --cache --ext ts,tsx --fix",
-    "storybook": "storybook dev -p 6006",
+    "start": "storybook dev -p 6006",
     "build:storybook": "storybook build -o docs-build",
     "start-yjs-server": "PORT=4444 node node_modules/y-webrtc/bin/server.js"
   },

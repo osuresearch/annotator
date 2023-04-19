@@ -1,6 +1,5 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef } from 'react';
 
-import { FocusScope, useFocusRing } from 'react-aria';
 import { useEditor, EditorContent } from '@tiptap/react';
 import { Editor } from '@tiptap/core';
 import StarterKit from '@tiptap/starter-kit';
@@ -8,17 +7,12 @@ import { useFrame } from 'react-frame-component';
 
 import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
 import { useTiptapAnnotations } from '../../hooks/useTiptapAnnotations';
-import { ActionsPopover } from '../ActionsPopover';
 import { filterAnnotations, isInViewport } from '../../utils';
 import { useAnnotationPicker } from '../../hooks/useAnnotationPicker';
 
 import { Comment } from './comment';
 import { CommentFocus } from './comment-focus';
 import { AnnotationID, Rect } from '../../types';
-
-type ActiveMark = Rect & {
-  id: string;
-};
 
 /**
  * Utility to retrieve all comment-views present with a thread reference

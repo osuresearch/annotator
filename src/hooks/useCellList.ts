@@ -1,7 +1,7 @@
-import React, { createContext, Key, useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import React, { createContext, Key, useLayoutEffect } from 'react';
 import { useListData } from 'react-stately';
 
-export type CellListItem = {
+export interface CellListItem {
   id: Key;
 
   /**
@@ -28,7 +28,7 @@ export type CellListItem = {
   height: number;
 };
 
-export type CellListContext = {
+export interface ICellListContext {
   items: CellListItem[];
 
   focused: CellListItem | undefined;
@@ -52,13 +52,13 @@ export type CellListContext = {
   updateItem: (id: Key, item: CellListItem) => void;
 };
 
-export type UseCellListReturn = CellListContext;
+export type UseCellListReturn = ICellListContext;
 
-export const Context = createContext<CellListContext>({} as CellListContext)
+export const CellListContext = createContext<ICellListContext>({} as ICellListContext)
 
 export function useCellList() {
   // React-stately will do the heavy lifting of list management
-  const { items, getItem, append, move, insert, remove, update, selectedKeys, setSelectedKeys } =
+  const { items, getItem, append, remove, update, selectedKeys, setSelectedKeys } =
     useListData<CellListItem>({
       getKey: (item) => item.id
     });
@@ -125,8 +125,6 @@ export function useCellList() {
       min = current.cell + current.height;
     }
 
-    console.log('pack', updated.length);
-
     // Batch apply updated positions for anything that was moved.
     updated.forEach((i) => update(sorted[i].id, sorted[i]));
   }
@@ -150,7 +148,6 @@ export function useCellList() {
     }
   }, [items, focused]);
 
-  console.log('useCellList', items);
   return <UseCellListReturn>{
     items,
     focused,

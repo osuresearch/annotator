@@ -1,13 +1,13 @@
-import React, { useState, createContext } from 'react';
+import { useState, createContext } from 'react';
 
-export type EditorsContext = {
+export interface IEditorsContext {
   hasActiveEditor: boolean;
   setActiveEditor: (active: boolean) => void;
 }
 
-export const Context = createContext<EditorsContext>({} as EditorsContext)
+export const EditorsContext = createContext<IEditorsContext>({} as IEditorsContext)
 
-export function useEditors(): EditorsContext {
+export function useEditors(): IEditorsContext {
   const [hasActiveEditor, setActiveEditor] = useState(false);
 
   return {

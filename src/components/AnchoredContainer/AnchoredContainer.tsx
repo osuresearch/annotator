@@ -1,10 +1,9 @@
-import React, { memo, useContext, useEffect } from "react";
-import { useElementSize } from "../../hooks/useElementSize";
-import { Context as CellListContext } from '../../hooks/useCellList';
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import { useCellListItem } from "../../hooks/useCellListItem";
 import { IconButton } from "@osuresearch/ui";
+import { useCellListItem } from "../../hooks/useCellListItem";
 import { Anchor } from '../../types';
+import { useElementSize } from "../../hooks/useElementSize";
 
 export type AnchoredContainerProps = {
   id: string

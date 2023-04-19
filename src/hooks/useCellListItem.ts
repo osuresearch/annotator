@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
 
-import { CellListItem, Context as CellListContext } from './useCellList';
+import { CellListItem, CellListContext as CellListContext } from './useCellList';
 
 /**
  * Manage a single `CellListItem` by key in the current `useCellList` context.

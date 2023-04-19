@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import { AnnotationsContext, Context } from './useAnnotations';
+import { IAnnotationsContext, AnnotationsContext } from './useAnnotations';
 
-export type UseAnnotationsContextReturn = AnnotationsContext;
+export type UseAnnotationsContextReturn = IAnnotationsContext;
 
 export function useAnnotationsContext(): UseAnnotationsContextReturn {
-  const ctx = useContext(Context);
+  const ctx = useContext(AnnotationsContext);
   return ctx;
 }

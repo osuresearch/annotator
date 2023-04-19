@@ -1,12 +1,12 @@
 import React, { useEffect, useContext } from 'react';
 import { Button, Group, Stack, Text } from '@osuresearch/ui';
-import { FocusScope, useFocusWithin } from 'react-aria';
+import { useFocusWithin } from 'react-aria';
 import { EditorContent, useEditor } from '@tiptap/react';
 import Placeholder from '@tiptap/extension-placeholder';
 import StarterKit from '@tiptap/starter-kit';
 import { getHotkeyHandler } from '@mantine/hooks';
 import styled from 'styled-components';
-import { Context as EditorsContext } from '../../hooks/useEditors';
+import { EditorsContext } from '../../hooks/useEditors';
 
 export type EditableMessageProps = {
   defaultValue: string;

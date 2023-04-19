@@ -1,4 +1,4 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { useFrame } from 'react-frame-component';
 import { Anchor } from '../../types';

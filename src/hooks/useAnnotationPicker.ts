@@ -14,7 +14,7 @@ export type AnnotationSelection = {
   end?: number;
 };
 
-export type AnnotationPickerContext = {
+export interface IAnnotationPickerContext {
   /**
    * Select a new region of the document to annotate
    */
@@ -31,11 +31,11 @@ export type AnnotationPickerContext = {
   deselect: () => void;
 };
 
-export const Context = createContext<AnnotationPickerContext>({} as AnnotationPickerContext);
+export const AnnotationPickerContext = createContext<IAnnotationPickerContext>({} as IAnnotationPickerContext);
 
-export type useAnnotationPickerReturn = AnnotationPickerContext;
+export type useAnnotationPickerReturn = IAnnotationPickerContext;
 
 export function useAnnotationPicker(): useAnnotationPickerReturn {
-  const ctx = useContext(Context);
+  const ctx = useContext(AnnotationPickerContext);
   return ctx;
 }

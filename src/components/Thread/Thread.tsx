@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Text,
   Stack,
   Group,
@@ -11,21 +10,18 @@ import {
   Icon,
   Link,
   cx,
-  Code,
   Box
 } from '@osuresearch/ui';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { FocusScope, useFocusWithin } from 'react-aria';
 import { useThread } from '../../hooks/useThread';
 import { useAnchorsContext } from '../../hooks/useAnchorsContext';
 import { EditableMessage } from './EditableMessage';
 import { Reply } from './Reply';
 import { StartReply } from './StartReply';
 import { ReadOnlyMessage } from './ReadOnlyMessage';
-import { isInViewport } from '../../utils';
 import { Profile } from './Profile';
 import { AnchoredContainer } from '../AnchoredContainer';
-import { Context as EditorsContext } from '../../hooks/useEditors';
+import { EditorsContext } from '../../hooks/useEditors';
 import { Annotation, AnnotationTextualBody, AnnotationThreadBody, AnchorRef } from '../../types';
 
 export type ThreadProps = {

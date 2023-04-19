@@ -1,4 +1,4 @@
-import { createContext, Key, useCallback, useEffect, useMemo, useState } from 'react';
+import { createContext, Key, useMemo, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { useListData } from 'react-stately';
 import { Annotation, AnnotationMotivation, AnnotationSelector, AnnotationID, AnnotationBody, AnnotationAgent } from '../types';
@@ -8,7 +8,7 @@ export type AnnotationInteractionState = {
   focused?: Annotation;
 }
 
-export type AnnotationsContext = {
+export interface IAnnotationsContext {
   /**
    * Start a new annotation thread and focus it
    *
@@ -80,9 +80,9 @@ export type AnnotationsContext = {
   setIsEditingComment: (value: boolean) => void;
 };
 
-export const Context = createContext<AnnotationsContext>({} as AnnotationsContext);
+export const AnnotationsContext = createContext<IAnnotationsContext>({} as IAnnotationsContext);
 
-export type UseAnnotationsReturn = AnnotationsContext;
+export type UseAnnotationsReturn = IAnnotationsContext;
 
 /**
  * Manage a list of annotations that reference a source document.

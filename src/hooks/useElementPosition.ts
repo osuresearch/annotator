@@ -1,4 +1,4 @@
-import { useMemo, useState, useRef, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Rect } from '../types';
 import { getDocumentPosition } from '../utils';
 

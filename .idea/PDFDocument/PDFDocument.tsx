@@ -2,9 +2,9 @@ import { Code, Group, Heading, Stack } from '@osuresearch/ui';
 import React, { useCallback, useEffect, useId, useRef, useState } from 'react';
 import Frame from 'react-frame-component';
 
-import { useAnnotationsContext } from '../../hooks/useAnnotationsContext';
+import { useAnnotationsContext } from '../../src/hooks/useAnnotationsContext';
 import { AdobeDCDocument } from './AdobeDCDocument';
-import { ThreadList } from '../ThreadList';
+import { ThreadList } from '../../src/components/ThreadList';
 
 export type PDFDocumentProps = {
   /** Adobe DC services client ID */
