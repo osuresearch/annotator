@@ -24,7 +24,8 @@
   "source": "src/index.ts",
   "types": "dist/index.d.ts",
   "files": [
-    "dist"
+    "dist",
+    "src"
   ],
   "scripts": {
     "pretest": "yarn lint",
@@ -40,8 +41,7 @@
   },
   "peerDependencies": {
     "react": "^16.8.0 || ^17.0.0-rc.1 || ^18.0.0",
-    "react-dom": ">=16.9.0",
-    "react-router-dom": ">=5.0.1"
+    "react-dom": ">=16.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
@@ -173,6 +173,7 @@
     "react-hook-form": "^7.43.9",
     "react-is": "^18.2.0",
     "react-stately": "^3.21.0",
+    "react-use": "^17.4.0",
     "styled-components": "^5.3.8",
     "uuid": "^9.0.0"
   }
