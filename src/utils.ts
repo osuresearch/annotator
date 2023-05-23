@@ -14,40 +14,21 @@ export function isInViewport(window: Window, rect: Rect) {
 }
 
 /**
- * Get absolute position of the element in the root document.
- *
- * This also accounts for elements within nested iframes.
+ * Get the position of an element in the document relative to some parent
  */
-export function getDocumentPosition(el: Element): { top: number; left: number } {
-  const doc = el.ownerDocument;
-  const win = doc.defaultView;
-  if (!win) {
-    return { top: -1, left: -1 };
+export function getDocumentPosition(el: HTMLElement, relativeTo?: HTMLElement) {
+  let left = 0;
+  let top = 0;
+  let current = el;
+
+  while (current  && current !== relativeTo && !isNaN(current.offsetLeft) && !isNaN(current.offsetTop)) {
+    left += current.offsetLeft - current.scrollLeft;
+    top += current.offsetTop - current.scrollTop;
+    current = current.offsetParent as HTMLElement;
   }
 
-  const rect = el.getBoundingClientRect();
-  const scrollLeft = win.scrollX || doc.documentElement.scrollLeft;
-  const scrollTop = win.scrollY || doc.documentElement.scrollTop;
-
-  // // If the element is in an iframe, we need to recurse upward.
-  // if (win.frameElement) {
-  //   const framePosition = getDocumentPosition(win.frameElement);
-  //   return {
-  //     top: Math.round(framePosition.top + rect.top + scrollTop),
-  //     left: Math.round(framePosition.left + rect.left + scrollLeft)
-  //   };
-  // }
-
-  return {
-    top: Math.round(rect.top + scrollTop),
-    left: Math.round(rect.left + scrollLeft)
-  };
+  return { top, left };
 }
-
-// function sortThreads(threads: HTMLElement[], anchors: HTMLElement[]): HTMLElement[] {
-//   // sort anchors by top and then re-map the sorted indices back to threads.
-
-// }
 
 /**
  * Reflow all threads below (below in DOM, above in index number and top)

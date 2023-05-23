@@ -80,8 +80,8 @@ export const Reply = React.forwardRef<HTMLDivElement, ReplyProps>(({ thread, nod
 
             {/* TODO: Disable when hasActiveEditor.
               See: https://github.com/osuresearch/ui/issues/54 */}
-            <Item key="edit">Edit reply</Item>
-            <Item key="delete"><Text c="error">Delete</Text></Item>
+            <Item key="edit" textValue="Edit">Edit reply</Item>
+            <Item key="delete" textValue="Delete"><Text c="error">Delete</Text></Item>
           </Menu>
         )}
       </Group>
