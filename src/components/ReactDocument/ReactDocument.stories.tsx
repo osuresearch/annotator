@@ -5,7 +5,7 @@ import { Group, Heading, Paper, Stack } from '@osuresearch/ui';
 import { ReactDocument } from './ReactDocument';
 import { AnnotationsProvider } from '../AnnotationsProvider';
 import { AnnotationAgent } from '../../types';
-import { NoteAnchor } from './NoteAnchor';
+import { NoteAnchor } from '../NoteAnchor';
 
 const meta: Meta<typeof ReactDocument> = {
   title: 'Components/ReactDocument',

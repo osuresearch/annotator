@@ -1,11 +1,10 @@
 import React, { useRef, useEffect, useState, memo } from 'react';
-import { useAnchorsContext, useAnnotationFocus, useAnnotationPicker } from '../../hooks';
-import { useElementPosition } from '../../hooks/useElementPosition';
+import { cx } from '@osuresearch/ui';
+import styled from 'styled-components';
+import { useAnchorsContext, useAnnotationPicker } from '../../hooks';
 import { getDocumentPosition } from '../../utils';
 import { Rect } from '../../types';
-import { Chip, cx } from '@osuresearch/ui';
 import { useThreads } from '../../hooks/useThreads';
-import styled from 'styled-components';
 
 export type NoteAnchorProps = {
   id: string

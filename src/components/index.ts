@@ -4,6 +4,8 @@
 // export * from './AnnotatedTextField';
 export * from './AnnotationsProvider';
 export * from './ExternalDocument';
+export * from './NoteAnchor';
+export * from './ReactDocument';
 // export * from './TableOfContents';
 // export * from './Thread';
 // export * from './ThreadList';
