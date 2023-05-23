@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/osuresearch/annotator/compare/v1.1.0...v1.1.1) (2023-05-23)
+
+
+### Bug Fixes
+
+* actually bundle the new components :unamused: ([377f4aa](https://github.com/osuresearch/annotator/commit/377f4aa1b0c31afb662e720f2aaa8dbc1d4a8c4d))
+
 # [1.1.0](https://github.com/osuresearch/annotator/compare/v1.0.0...v1.1.0) (2023-05-23)
 
 
