@@ -1,7 +1,7 @@
-// export * from './useAnchors';             // ExternalDocument
-// export * from './useAnchorsContext';      // Controller, NoteAnchor, Thread, useTiptapAnnotations
-// export * from './useAnnotationFocus';     // NoteAnchor
-// export * from './useAnnotationPicker';    // ActionsSidebar, AnnotatedTextField, useAnnotationFocus
+export * from './useAnchors';             // ExternalDocument
+export * from './useAnchorsContext';      // Controller, NoteAnchor, Thread, useTiptapAnnotations
+export * from './useAnnotationFocus';     // NoteAnchor
+export * from './useAnnotationPicker';    // ActionsSidebar, AnnotatedTextField, useAnnotationFocus
 export * from './useAnnotations';         // AnnotationsProvider
 export * from './useAnnotationsContext';  // ThreadList, AnnotatedTextField, useThreads
 // export * from './useCellList';            // ThreadList
