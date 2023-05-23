@@ -156,22 +156,12 @@ export function Thread({ node }: ThreadProps) {
     };
   }, [ref, focus]);
 
-  // Recoverable deleted threads get a placeholder to undo
-  if (deleted && recoverable) {
-    return (
-      <Paper withBorder p="xs">
-        Deleted thread.{' '}
-        <Link as="button" onClick={recover}>
-          (undo)
-        </Link>
-      </Paper>
-    );
-  }
-
   // Non-recoverable deleted threads are just hidden.
-  if (deleted) {
+  if (deleted && !recoverable) {
     return null;
   }
+
+  const isDeletedAndRecoverable = deleted && recoverable;
 
   return (
     <AnchoredContainer id={node.id} anchor={anchor} focused={focused} gap={16}>
@@ -188,6 +178,16 @@ export function Thread({ node }: ThreadProps) {
         })}
         w={400 - 48}
       >
+        {isDeletedAndRecoverable &&
+          <div>
+
+            Deleted thread.{' '}
+            <Link as="button" onClick={recover}>
+              (undo)
+            </Link>
+          </div>
+        }
+        {!isDeletedAndRecoverable && <>
         <Stack align="stretch" gap="md" px="xs" pb="xs">
           {resolved && (
             <Group justify="apart" align="center">
@@ -215,9 +215,9 @@ export function Thread({ node }: ThreadProps) {
                 See: https://github.com/osuresearch/ui/issues/54 */}
               <Menu label={<></>} /*"Actions" /*asMoreOptions*/ onAction={onAction}
                 disabledKeys={hasActiveEditor ? ['edit', 'resolve', 'delete'] : []}>
-                <Item key="edit">Edit comment</Item>
-                <Item key="resolve">Resolve thread</Item>
-                <Item key="delete"><Text c="error">Delete thread</Text></Item>
+                <Item key="edit" textValue="Edit">Edit comment</Item>
+                <Item key="resolve" textValue="Resolve">Resolve thread</Item>
+                <Item key="delete" textValue="Delete"><Text c="error">Delete thread</Text></Item>
               </Menu>
             </Group>
           )}
@@ -246,6 +246,7 @@ export function Thread({ node }: ThreadProps) {
 
           {!resolved && !isInitial && focused && <StartReply thread={node} />}
         </Stack>
+        </>}
       </Paper>
     </AnchoredContainer>
   );

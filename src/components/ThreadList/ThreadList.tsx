@@ -27,13 +27,12 @@ export const ThreadList = forwardRef<HTMLDivElement>((props, ref) => {
 
   return (
     <div ref={ref}>
-      <Button variant="subtle" onPress={() => console.log(annotations)} style={{
+      {/* <Button variant="subtle" onPress={() => console.log(annotations)} style={{
         position: 'absolute',
         top: 0,
-        right: 0,
       }}>
         <Icon name="code" /> Print annotations to console
-      </Button>
+      </Button> */}
 
       <CellListContext.Provider value={cellList}>
         <AnchorButtons />
