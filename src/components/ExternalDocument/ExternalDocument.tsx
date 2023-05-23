@@ -6,7 +6,7 @@ import { Controller } from './Controller';
 import { TableOfContents } from '../TableOfContents/TableOfContents';
 import { ActionsSidebar } from '../ActionsSidebar';
 
-import { useAnchors, Context } from '../../hooks/useAnchors';
+import { useAnchors, AnchorsContext } from '../../hooks/useAnchors';
 import { ThreadList } from '../ThreadList';
 
 // Styles to inject into the inner iframe
@@ -116,8 +116,8 @@ export function ExternalDocument(props: ExternalDocumentProps) {
   const document = frameRef.current?.contentWindow?.document;
 
   return (
-    <Context.Provider value={ctx}>
-      <Group bgc="light" justify="center" miw="calc(21cm + 400px)" py="md" align="stretch" gap={0}>
+    <AnchorsContext.Provider value={ctx}>
+      <Group bgc="light" miw="calc(21cm + 400px)" py="md" align="stretch" gap={0}>
         {document && <TableOfContents  document={document} />}
         <Paper w="21cm" miw="21cm" p="xxl" withBorder shadow="md">
           <Frame
@@ -139,6 +139,6 @@ export function ExternalDocument(props: ExternalDocumentProps) {
           <ThreadList ref={listRef} />
         </Stack>
       </Group>
-    </Context.Provider>
+    </AnchorsContext.Provider>
   );
 }

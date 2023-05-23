@@ -11,13 +11,13 @@ import { NewAnchor } from '../../types';
 
 function _Controller() {
   const { document } = useFrame();
-  const { items, addAnchors } = useAnchorsContext();
+  const { items, addAnchors, clearAnchors } = useAnchorsContext();
 
   if (!document) {
     return null;
   }
 
-  // Throw portals into all the anchor targets
+  // Throw portals into all the anchor targets on first mount.
   useEffect(() => {
     if (!document) {
       return;
@@ -54,6 +54,8 @@ function _Controller() {
     });
 
     addAnchors(anchors);
+
+    return () => clearAnchors();
   }, [document]);
 
   return (

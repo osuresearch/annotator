@@ -1,4 +1,4 @@
-import React, { SyntheticEvent, useEffect, useState } from 'react';
+import React, { SyntheticEvent, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import styled from 'styled-components';
 import { getHotkeyHandler } from '@mantine/hooks';
@@ -97,13 +97,13 @@ function NoteAnchorImpl({ anchor, el }: { anchor: Anchor; el: HTMLElement }) {
 
 export function NoteAnchor(anchor: Anchor) {
   const { document } = useFrame();
-  const [target, setTarget] = useState<HTMLElement>();
+  const target = useRef(document?.getElementById(anchor.source)).current;
+
   const { addAnchors } = useAnchorsContext();
 
-  const position = useElementPosition(target);
+  const position = useElementPosition(target ?? undefined);
 
   useEffect(() => {
-    console.log('update position', anchor, position);
     addAnchors([
       {
         ...anchor,
@@ -112,15 +112,7 @@ export function NoteAnchor(anchor: Anchor) {
     ]);
   }, [anchor, position]);
 
-  // TODO: Remove anchors on unmount.
-
-  useEffect(() => {
-    setTarget(document?.getElementById(anchor.source) ?? undefined);
-  }, [anchor.source, document]);
-
-  if (!target) {
-    return null;
-  }
+  if (!target) return null;
 
   return <NoteAnchorImpl anchor={anchor} el={target} />;
 }

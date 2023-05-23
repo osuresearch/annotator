@@ -225,7 +225,7 @@ export const StressTest: Story = {
     const fields = [...Array(100)].map(
       (_, i) => `
       <div>
-        <strong>Long field ${i}><strong>
+        <strong>Long field ${i}></strong>
         <div id="field${i}" data-comment-inline>
           <p>Aliquam scelerisque mauris non aliquet iaculis. Nullam egestas urna risus,
           nec sodales nisl facilisis sed. Duis vitae velit sed ipsum consectetur blandit
