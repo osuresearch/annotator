@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useLayoutEffect } from 'react';
 import { Rect } from '../types';
 import { getDocumentPosition } from '../utils';
 
@@ -20,13 +20,14 @@ export function useElementPosition(ref?: HTMLElement) {
       }
     }
 
-    return { x: 0, y: 0, width: 0, height: 0 }
+    return { x: -1, y: 0, width: 0, height: 0 }
   });
 
   // TODO: Obviously, performance isn't great here. But
   // ResizeObserver isn't sufficient. Any modern solutions?
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!ref) {
+      console.log('no ref');
       return;
     }
 

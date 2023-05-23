@@ -17,22 +17,26 @@ import { CellListItem, CellListContext as CellListContext } from './useCellList'
 export function useCellListItem(id: React.Key, anchorCell: number) {
   const { getItem, addItem, removeItem, updateItem, focus } = useContext(CellListContext);
 
-  const item = getItem(id);
-  if (!item) {
-    addItem({
-      id: id,
-      cell: 0,
-      anchorCell,
-      height: 0
-    });
-  }
+  useEffect(() => {
+    const item = getItem(id);
 
-  if (item && anchorCell !== item.anchorCell) {
-    updateItem(id, {
-      ...item,
-      anchorCell
-    });
-  }
+    if (!item) {
+      addItem({
+        id: id,
+        cell: 0,
+        anchorCell,
+        height: 0
+      });
+    }
+
+    if (item && anchorCell !== item.anchorCell) {
+      updateItem(id, {
+        ...item,
+        anchorCell
+      });
+    }
+
+  }, [getItem, addItem, updateItem, id, anchorCell]);
 
   // Remove the item on unmount of this component
   useEffect(() =>
@@ -41,7 +45,7 @@ export function useCellListItem(id: React.Key, anchorCell: number) {
   , [id]);
 
   return {
-    item,
+    item: getItem(id),
     update: (state: CellListItem) => {
       updateItem(id, state);
     },

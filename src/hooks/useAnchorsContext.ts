@@ -1,9 +1,9 @@
 import { useContext } from 'react';
-import { AnchorsContext, Context } from './useAnchors';
+import { IAnchorsContext, AnchorsContext } from './useAnchors';
 
-export type UseAnchorsContextReturn = AnchorsContext;
+export type UseAnchorsContextReturn = IAnchorsContext;
 
 export function useAnchorsContext(): UseAnchorsContextReturn {
-  const ctx = useContext(Context);
+  const ctx = useContext(AnchorsContext);
   return ctx;
 }

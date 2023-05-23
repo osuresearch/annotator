@@ -86,8 +86,6 @@ export function useTiptapAnnotations(source: string, editor: Editor | null, anno
         });
       });
 
-      console.log('new anchors', anchors);
-
       addAnchors(anchors);
     }
 
