@@ -49,12 +49,31 @@ export function AnchoredContainer({ id, anchor, focused, gap, children }: Anchor
     }
   }, [item, id, anchorPos, heightWithGap, focused]);
 
+  // TODO: This is a hack to stop the fly-in focus event that happens.
+  // Will cause issues if something is shifted to cell 0.
+  if (item?.cell === 0) {
+    return null;
+  }
+
   return (
     <>
-    <IconButton size={20} label="Icon here" name="comment" style={{
+    <IconButton size={20} label="Comments" name="comment" style={{
       position: 'absolute',
-      transform: `translateY(${item?.anchorCell ?? 0}px) translateX(-48px)`
+      transform: `translateY(${item?.anchorCell ?? 0}px) translateX(-28px)`,
+      color: focused ? '#a76f09' : '#d3b172',
+      zIndex: focused ? 40 : undefined,
     }} />
+
+    {/* <div style={{
+      position: 'absolute',
+      width: 1000,
+      height: 1,
+      backgroundColor: 'red',
+      top: item?.anchorCell,
+      left: 0,
+      marginLeft: -1000,
+      zIndex: 9999,
+    }} /> */}
 
     <AnimatedContainer ref={ref} style={{
       position: 'absolute',
