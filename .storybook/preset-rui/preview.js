@@ -1,3 +1,4 @@
+import React from 'react';
 import { useDarkMode } from 'storybook-dark-mode';
 import { RUIProvider } from '@osuresearch/ui';
 import { DocsContainer } from './DocsContainer';
@@ -28,8 +29,10 @@ export const parameters = {
 // Wrap preview iframe with RUI's provider
 export const decorators = [
   (Story) => (
-    <RUIProvider theme={useDarkMode() ? 'dark' : 'light'}>
-      <Story />
-    </RUIProvider>
+    <React.StrictMode>
+      <RUIProvider theme={useDarkMode() ? 'dark' : 'light'}>
+        <Story />
+      </RUIProvider>
+    </React.StrictMode>
   ),
 ];

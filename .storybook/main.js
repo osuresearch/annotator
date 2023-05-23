@@ -21,4 +21,7 @@ module.exports = {
   docs: {
     autodocs: true
   },
+  reactOptions: {
+    strictMode: true,
+  }
 };
