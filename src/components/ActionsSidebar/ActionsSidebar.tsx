@@ -17,7 +17,7 @@ const Panel = styled.div`
 `;
 
 export function ActionsSidebar() {
-  const { selected, select } = useAnnotationPicker();
+  const { selected } = useAnnotationPicker();
   const { createThread } = useAnnotationsContext();
   const [isFocusWithin, onFocusWithinChange] = useState(false);
   const { focusWithinProps } = useFocusWithin({
@@ -33,7 +33,7 @@ export function ActionsSidebar() {
       return;
     }
 
-    const thread = createThread('commenting', {
+    const thread = createThread(motivation, {
       type: 'FragmentSelector',
       value: active.targetField,
 
@@ -72,8 +72,10 @@ export function ActionsSidebar() {
   return (
     <Panel
       style={{
-        top,
-        display: active ? 'flex' : 'none'
+        top: top - 16,
+        right: 4,
+        display: active ? 'flex' : 'none',
+        zIndex: 50
       }}
       {...focusWithinProps}
     >
@@ -96,17 +98,13 @@ export function ActionsSidebar() {
       </Tooltip>
 
       <Tooltip contentSlot="Make a suggestion">
-        <IconButton name="suggestionComment" label="Make a suggestion" size={24} />
+        <IconButton
+          name="suggestionComment"
+          label="Make a suggestion"
+          size={24}
+          onPress={() => startThread('commenting')}
+        />
       </Tooltip>
-      {/* <Button>
-        💬 {isFocusWithin ? 'focus' : 'nope'}
-        <br />
-        {selected ? selected.source : 'no sel'}
-        <br />
-        {prev ? 'prev: ' + prev.source : 'no prev'}
-        <br />
-        {active ? 'active: ' + active.source : 'no active'}
-      </Button> */}
     </Panel>
   );
 }
